@@ -15,15 +15,15 @@ class FeatureEngineering():
     def integral(self):
         for column in self.data.columns:
             if column != self.target:
-                #Integral numa janela de 3 dias.
-                self.df_fe[f'{column}_integral'] = self.data[column].rolling(3).sum()
+                
+                self.df_fe[f'{column}_integral'] = self.data[column].rolling(10).sum()
 
     def momentos_estatisticos(self):
         for column in self.data.columns:
             if column != self.target:
-                #Média móvel e desvio padrão de 3 dias.
-                self.df_fe[f'{column}_moving_average'] = self.data[column].rolling(3).mean()
-                self.df_fe[f'{column}_std'] = self.data[column].rolling(3).std()
+                
+                self.df_fe[f'{column}_moving_average'] = self.data[column].rolling(10).mean()
+                self.df_fe[f'{column}_std'] = self.data[column].rolling(10).std()
 
 
     def pipeline_feat_eng(self):

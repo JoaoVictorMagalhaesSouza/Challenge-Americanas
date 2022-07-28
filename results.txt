@@ -1,2 +1,9 @@
-IQR ratio = 5:
-	- Com limpeza:
+Melhores resultados
+XGBoost
+	- Com limpeza + interpolação linear = 0.6228 (+/- 0.14)
+	- Com limpeza + interpolação polinomial = 0.5903 (+/- 0.15)
+	- Com limpeza + média: 0.6329 (+/- 0.09)
+	- Sem limpeza: 0.6373 (+/- 0.12)
+
+Catboost:
+	- Com limpeza + média: 0.6419 (+/- 0.12)
