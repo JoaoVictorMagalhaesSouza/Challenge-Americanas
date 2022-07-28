@@ -16,19 +16,22 @@ import feature_engineering as fe
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import classification_report
+from sklearn.naive_bayes import MultinomialNB
+from sklearn import svm
+from limpeza import CleansingData
 #%% Reading the input data
 """
     Aqui é dedicada uma seção para a leitura e visualização bruta e inicial dos dados
     no formato de tabela.
 """
 input_data = pd.read_parquet('dataset_cdjr.parquet.gzip')
-display(input_data.head(10))
+#display(input_data.head(10))
 #%% Exploratory Analisys
 '''
     Essa primeira analise será um gráfico de linhas para visualizar, de modo geral, o comportamento das variáveis ao longo do dataframe de entrada.
     Para isso, criei uma nova coluna chamada x-axis para simular o passar do tempo.
 '''
-display(input_data.describe())
+#display(input_data.describe())
 input_data['x-axis'] = [x for x in range(len(input_data))]
 for column in input_data.columns:
     if column not in['x-axis','target']:
@@ -54,17 +57,26 @@ pearson_df = abs(input_data.corr('pearson'))['target']
 # input_data = input_data.merge(new_features,on=input_data.index,how='left')
 #input_data = input_data.fillna(0)
 #%% Split data
+clean = True
+if clean:
+    cleansing = CleansingData(input_data)
+    input_data = cleansing.remove_outliers()
+    #input_data = input_data.interpolate(method='polynomial',order=3)
+    #input_data = input_data.interpolate(method='linear')
+    #-input_data = input_data.fillna(method='bfill').fillna(method='ffill')
 X_train, x_test, y_train, y_test = train_test_split(input_data.drop(columns={'target'}),input_data['target'])
 #%% Create model
 xgb_model = XGBClassifier(max_depth = 7,
                          n_estimators=100,
-                         learning_rate=0.01,
+                         learning_rate=0.025,
                          subsample=0.9,
-                         colsample_bytree=0.7,
+                         colsample_bytree=0.70,
+                         weight = [0.3,0.7]
                          )
 xgb_model.fit(X_train,y_train)
 xgb_predictions = xgb_model.predict(x_test)
 #%% Evaluate model
+print(f"Model acc: {accuracy_score(xgb_predictions,y_test)}")
 print(classification_report(y_test,xgb_predictions))
 '''
     Confusion Matrix
@@ -74,4 +86,11 @@ ConfusionMatrixDisplay.from_predictions(
     y_test, xgb_predictions, labels=xgb_model.classes_, ax=ax, colorbar=False
 )
 plt.show()
-# %%
+# %% Cross validation
+scores = cross_val_score(xgb_model, input_data.drop(columns={'target'}),input_data['target'], cv=10)
+print("Accuracy XGBoost: %0.4f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+#%% SVM Model
+clf = svm.SVC()
+scores = cross_val_score(clf, input_data.drop(columns={'target'}),input_data['target'], cv=10)
+print("Accuracy Naive Bayes: %0.4f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+#%%
