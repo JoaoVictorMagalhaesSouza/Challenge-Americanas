@@ -14,6 +14,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from xgboost import XGBClassifier
 import feature_engineering as fe
+import data_balancer as db
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.metrics import classification_report
@@ -54,6 +55,15 @@ mi = mutual_info_regression(input_data.drop(columns={'target'}),input_data['targ
     mantenho todas as variáveis de entrada.
 '''
 
+
+input_data['target'].value_counts()
+'''
+    Aqui vejo outro problema: temos um conjunto desbalanceado: 260 ocorrências de 1 e 206 de 0.
+'''
+balance_data = False
+if balance_data:
+    balancer = db.DataBalancer(input_data)
+    input_data = balancer.balance()
 #%% Data Preparation
 '''
     Como as variáveis possuem uma fraca correlação com a target, ou seja, me dão pouca informação acerca da minha variável alvo,
@@ -104,7 +114,11 @@ scores = cross_val_score(xgb_model, input_data[features],input_data['target'], c
 print("Accuracy XGBoost: %0.4f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
 # %% Catboost
-ctb_model = CatBoostClassifier(iterations=150,depth=8,learning_rate=0.3)
+ctb_model = CatBoostClassifier(iterations=150,
+                                depth=8,
+                                learning_rate=0.35,
+                                loss_function='Logloss',
+                                auto_class_weights='SqrtBalanced')
 ctb_model.fit(X_train,y_train)
 ctb_predictions = ctb_model.predict(x_test)
 print(f"Model acc: {accuracy_score(ctb_predictions,y_test)}")
