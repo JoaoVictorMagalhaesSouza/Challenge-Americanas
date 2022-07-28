@@ -8,4 +8,5 @@ XGBoost
 Catboost:
 	- Com limpeza + média: 0.6419 (+/- 0.12)
 	- Com feature selection sem limpeza: 0.6461 (+/- 0.15)
-	- Feature selection + limpeza: 0.6461 (+/- 0.13)
+	- Feature selection + limpeza: 0.6482 (+/- 0.10)
+	- Limpeza + FE: 0.6653 (+/- 0.11)

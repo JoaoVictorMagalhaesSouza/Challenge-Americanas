@@ -70,6 +70,9 @@ if clean:
     #input_data = input_data.interpolate(method='polynomial',order=2)
     #input_data = input_data.interpolate(method='linear')
     input_data = input_data.fillna(method='bfill').fillna(method='ffill')
+new_features = fe.FeatureEngineering(input_data).pipeline_feat_eng()
+input_data = input_data.merge(new_features,on=input_data.index,how='left')
+input_data = input_data.dropna()
 features = ['feature0', 'feature1', 'feature2','feature3', 'feature4', 'feature5',
        'feature6', 'feature7', 'feature8', 'feature9', 'feature10', 
        'feature11', 'feature12', 'feature13', 'feature14', 'feature15']
