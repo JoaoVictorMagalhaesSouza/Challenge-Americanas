@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import fastparquet
 import plotly.express as px
+from sklearn.feature_selection import mutual_info_regression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from xgboost import XGBClassifier
@@ -46,6 +47,8 @@ if analisys:
     Prossigo então fazendo uma análise de correlação linear e de informação mútua das variáveis de entrada com a nossa target
 '''
 pearson_df = abs(input_data.corr('pearson'))['target']
+spearman_df = abs(input_data.corr('spearman'))['target']
+mi = mutual_info_regression(input_data.drop(columns={'target'}),input_data['target'],n_neighbors=5)
 '''
     De cara observo que as correlações com a variável alvo são bem baixas. Neste caso, eu não opto por tirar nenhuma variável e, sendo assim,
     mantenho todas as variáveis de entrada.
@@ -60,15 +63,19 @@ pearson_df = abs(input_data.corr('pearson'))['target']
 # input_data = input_data.merge(new_features,on=input_data.index,how='left')
 #input_data = input_data.fillna(0)
 #%% Split data
-clean = False
+clean = True
 if clean:
     cleansing = CleansingData(input_data)
     input_data = cleansing.remove_outliers()
     #input_data = input_data.interpolate(method='polynomial',order=2)
     #input_data = input_data.interpolate(method='linear')
-    #input_data = input_data.fillna(method='bfill').fillna(method='ffill')
+    input_data = input_data.fillna(method='bfill').fillna(method='ffill')
+features = ['feature0', 'feature1', 'feature2','feature3', 'feature4', 'feature5',
+       'feature6', 'feature7', 'feature8', 'feature9', 'feature10', 
+       'feature11', 'feature12', 'feature13', 'feature14', 'feature15']
+#X_train, x_test, y_train, y_test = train_test_split(input_data.drop(columns={'target'}),input_data['target'],train_size=0.8)
+X_train, x_test, y_train, y_test = train_test_split(input_data[features],input_data['target'],train_size=0.8)
 
-X_train, x_test, y_train, y_test = train_test_split(input_data.drop(columns={'target'}),input_data['target'],train_size=0.8)
 #%% Create model
 xgb_model = XGBClassifier(max_depth = 7,
                          n_estimators=1500,
@@ -90,11 +97,11 @@ ConfusionMatrixDisplay.from_predictions(
 )
 plt.show()
 # %% Cross validation
-scores = cross_val_score(xgb_model, input_data.drop(columns={'target'}),input_data['target'], cv=10)
+scores = cross_val_score(xgb_model, input_data[features],input_data['target'], cv=10)
 print("Accuracy XGBoost: %0.4f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
 # %% Catboost
-ctb_model = CatBoostClassifier(iterations=150,depth=7,learning_rate=0.3)
+ctb_model = CatBoostClassifier(iterations=150,depth=8,learning_rate=0.3)
 ctb_model.fit(X_train,y_train)
 ctb_predictions = ctb_model.predict(x_test)
 print(f"Model acc: {accuracy_score(ctb_predictions,y_test)}")
@@ -107,7 +114,7 @@ ConfusionMatrixDisplay.from_predictions(
     y_test, ctb_predictions, labels=ctb_model.classes_, ax=ax, colorbar=False
 )
 plt.show()
-scores = cross_val_score(ctb_model, input_data.drop(columns={'target'}),input_data['target'], cv=10)
+scores = cross_val_score(ctb_model, input_data[features],input_data['target'], cv=10)
 print("Accuracy Catboost: %0.4f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
 # %%
