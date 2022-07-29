@@ -8,20 +8,22 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import fastparquet
-import plotly.express as px
+
 from sklearn.feature_selection import mutual_info_regression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-from xgboost import XGBClassifier
-import feature_engineering as fe
-import data_balancer as db
+from sklearn import metrics, preprocessing
+from feature_importance import plot_importance
+from data_balancer import DataBalancer
+from data_preparation import DataPreparation
+from exploratory_analisys import ExploratoryAnalisys
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.metrics import classification_report
-from sklearn.naive_bayes import MultinomialNB
-from sklearn import svm
-from limpeza import CleansingData
 from catboost import CatBoostClassifier
+
+#%% Configs
+verbose = False
 #%% Reading the input data
 """
     Aqui é dedicada uma seção para a leitura e visualização bruta e inicial dos dados
@@ -31,107 +33,81 @@ input_data = pd.read_parquet('dataset_cdjr.parquet.gzip')
 #display(input_data.head(10))
 #%% Exploratory Analisys
 '''
-    Essa primeira analise será um gráfico de linhas para visualizar, de modo geral, o comportamento das variáveis ao longo do dataframe de entrada.
-    Para isso, criei uma nova coluna chamada x-axis para simular o passar do tempo.
+    Foi criada uma classe responsável apenas pela parte de Análise Exploratória dos Dados, denomidada
+    ExploratoryAnalisys cujo 'construtor' recebe os dados de entrada.
 '''
-#display(input_data.describe())
-analisys = False
-if analisys:
-    input_data['x-axis'] = [x for x in range(len(input_data))]
-    for column in input_data.columns:
-        if column not in['x-axis','target']:
-            fig = px.line(data_frame=input_data,x='x-axis',y=column)
-            fig.show()
-    input_data.pop('x-axis')
-#input_data = input_data.sample(frac=1)
-'''
-    Prossigo então fazendo uma análise de correlação linear e de informação mútua das variáveis de entrada com a nossa target
-'''
-pearson_df = abs(input_data.corr('pearson'))['target']
-spearman_df = abs(input_data.corr('spearman'))['target']
-mi = mutual_info_regression(input_data.drop(columns={'target'}),input_data['target'],n_neighbors=5)
-'''
-    De cara observo que as correlações com a variável alvo são bem baixas. Neste caso, eu não opto por tirar nenhuma variável e, sendo assim,
-    mantenho todas as variáveis de entrada.
-'''
+exploratory_analisys = ExploratoryAnalisys(input_data,verbose=verbose)
+print(exploratory_analisys.describe_data())
 
+'''
+    Aqui visualizamos o comportamento 'temporal' das variáveis, já na tentativa de buscar insights mais visuais
+    como outliers, etc...
+'''
+exploratory_analisys.view_time_series()
+'''
+    Posteriormente, crio os histogramas de cada uma das variáveis para entender melhor, e de maneira mais clara, como estão distribuídas.
+'''
+exploratory_analisys.view_histograms()
+'''
+    Na sequência, decido observar o nível de correlação das minhas variáveis de entrada com a minha target.
+'''
+exploratory_analisys.view_corr_plot()
+'''
+    Por fim, como se trata de um problema de classificação, vejo se temos um problema balanceado ou desbalanceado
+'''
+exploratory_analisys.view_target_distribuition()
 
-input_data['target'].value_counts()
 '''
-    Aqui vejo outro problema: temos um conjunto desbalanceado: 260 ocorrências de 1 e 206 de 0.
+    Criei um balanceador de dados manual mas optei por não utilizá-lo nesta resolução.
 '''
-balance_data = False
-if balance_data:
-    balancer = db.DataBalancer(input_data)
+to_balance = False
+if to_balance:
+    balancer = DataBalancer(input_data)
     input_data = balancer.balance()
-#%% Data Preparation
-'''
-    Como as variáveis possuem uma fraca correlação com a target, ou seja, me dão pouca informação acerca da minha variável alvo,
-    tento criar novas variáveis para enriquecer o nível de informação dos dados (Feature Engineering).
-# '''
-# new_features = fe.FeatureEngineering(input_data).pipeline_feat_eng()
-# input_data = input_data.merge(new_features,on=input_data.index,how='left')
-#input_data = input_data.fillna(0)
-#%% Split data
-clean = True
-if clean:
-    cleansing = CleansingData(input_data)
-    input_data = cleansing.remove_outliers()
-    #input_data = input_data.interpolate(method='polynomial',order=2)
-    #input_data = input_data.interpolate(method='linear')
-    input_data = input_data.fillna(method='bfill').fillna(method='ffill')
-new_features = fe.FeatureEngineering(input_data).pipeline_feat_eng()
-input_data = input_data.merge(new_features,on=input_data.index,how='left')
-input_data = input_data.dropna()
-features = ['feature0', 'feature1', 'feature2','feature3', 'feature4', 'feature5',
-       'feature6', 'feature7', 'feature8', 'feature9', 'feature10', 
-       'feature11', 'feature12', 'feature13', 'feature14', 'feature15']
-#X_train, x_test, y_train, y_test = train_test_split(input_data.drop(columns={'target'}),input_data['target'],train_size=0.8)
-X_train, x_test, y_train, y_test = train_test_split(input_data[features],input_data['target'],train_size=0.8)
 
-#%% Create model
-xgb_model = XGBClassifier(max_depth = 7,
-                         n_estimators=1500,
-                         learning_rate=0.2,
-                         subsample=0.6,
-                         colsample_bytree=0.7,
-                         )
-xgb_model.fit(X_train,y_train)
-xgb_predictions = xgb_model.predict(x_test)
-#%% Evaluate model
-print(f"Model acc: {accuracy_score(xgb_predictions,y_test)}")
-print(classification_report(y_test,xgb_predictions))
+#%% Data Preparation
+preprocess = DataPreparation(input_data)
+old_input = input_data.copy()
+input_data = preprocess.pipeline_pre_process()
+#%%
 '''
-    Confusion Matrix
+    Criei novas features mas após testes, vi que não surtiram muito efeito
 '''
-fig, ax = plt.subplots(figsize=(8, 6))
-ConfusionMatrixDisplay.from_predictions(
-    y_test, xgb_predictions, labels=xgb_model.classes_, ax=ax, colorbar=False
-)
-plt.show()
-# %% Cross validation
-scores = cross_val_score(xgb_model, input_data[features],input_data['target'], cv=10)
-print("Accuracy XGBoost: %0.4f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+features = ['feature0', 'feature1', 'feature2', 'feature3', 'feature4', 'feature5',
+       'feature6', 'feature7', 'feature8', 'feature9', 'feature10',
+       'feature11', 'feature12', 'feature13', 'feature14', 'feature15']
+#features = input_data.drop(columns={'target'}).columns
+#X_train, x_test, y_train, y_test = train_test_split(input_data.drop(columns={'target'}),input_data['target'],train_size=0.8)
+X_train, x_test, y_train, y_test = train_test_split(input_data[features],input_data['target'],train_size=0.70)
+
 
 # %% Catboost
 ctb_model = CatBoostClassifier(iterations=150,
                                 depth=8,
                                 learning_rate=0.35,
                                 loss_function='Logloss',
-                                auto_class_weights='SqrtBalanced')
-ctb_model.fit(X_train,y_train)
+                                auto_class_weights='SqrtBalanced',
+                                )
+ctb_model.fit(X_train,y_train,plot=verbose)
 ctb_predictions = ctb_model.predict(x_test)
-print(f"Model acc: {accuracy_score(ctb_predictions,y_test)}")
+
 print(classification_report(y_test,ctb_predictions))
 '''
     Confusion Matrix
 '''
-fig, ax = plt.subplots(figsize=(8, 6))
-ConfusionMatrixDisplay.from_predictions(
-    y_test, ctb_predictions, labels=ctb_model.classes_, ax=ax, colorbar=False
-)
-plt.show()
-scores = cross_val_score(ctb_model, input_data[features],input_data['target'], cv=10)
-print("Accuracy Catboost: %0.4f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+if verbose:
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ConfusionMatrixDisplay.from_predictions(
+        y_test, ctb_predictions, labels=ctb_model.classes_, ax=ax, colorbar=False
+    )
+    plt.show()
+print(f"Model acc: {accuracy_score(ctb_predictions,y_test)}")
+print("ROC AUC CatBoost: ",metrics.roc_auc_score(ctb_predictions,y_test.values))
 
-# %%
+#%%
+scores = cross_val_score(ctb_model, input_data[features],input_data['target'], cv=10)
+print("Cross Validation (10) off Catboost: %0.4f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+
+# %% Feature Importance
+plot_importance(ctb_model,features)
+#%%
