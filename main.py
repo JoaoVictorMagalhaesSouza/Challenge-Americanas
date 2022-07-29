@@ -21,9 +21,10 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.metrics import classification_report
 from catboost import CatBoostClassifier
+from xgboost import XGBClassifier
 
 #%% Configs
-verbose = False
+verbose = True
 #%% Reading the input data
 """
     Aqui é dedicada uma seção para a leitura e visualização bruta e inicial dos dados
@@ -69,6 +70,8 @@ if to_balance:
 preprocess = DataPreparation(input_data)
 old_input = input_data.copy()
 input_data = preprocess.pipeline_pre_process()
+N = 9
+input_data = input_data.iloc[N: , :]
 #%%
 '''
     Criei novas features mas após testes, vi que não surtiram muito efeito
@@ -76,7 +79,7 @@ input_data = preprocess.pipeline_pre_process()
 features = ['feature0', 'feature1', 'feature2', 'feature3', 'feature4', 'feature5',
        'feature6', 'feature7', 'feature8', 'feature9', 'feature10',
        'feature11', 'feature12', 'feature13', 'feature14', 'feature15']
-#features = input_data.drop(columns={'target'}).columns
+features = input_data.drop(columns={'target'}).columns
 #X_train, x_test, y_train, y_test = train_test_split(input_data.drop(columns={'target'}),input_data['target'],train_size=0.8)
 X_train, x_test, y_train, y_test = train_test_split(input_data[features],input_data['target'],train_size=0.70)
 

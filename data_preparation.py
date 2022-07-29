@@ -22,7 +22,7 @@ class DataPreparation():
     def create_new_features(self):
         new_features = self.featureEngineering.pipeline_feat_eng()
         self.output_data = self.output_data.merge(new_features,on=self.output_data.index,how='inner',sort=False)
-        #self.output_data.index = self.output_data['key_0'].values
+        self.output_data.index = self.output_data['key_0'].values
         self.output_data.pop('key_0')
         self.output_data = self.output_data.dropna()
     
@@ -37,6 +37,6 @@ class DataPreparation():
         self.output_data['target'] = target
     def pipeline_pre_process(self):
         self.clean_data()
-        self.create_new_features()
+        #self.create_new_features()
         #self.normalize_data()
         return self.output_data
