@@ -1,7 +1,8 @@
 import pandas as pd
-from limpeza import CleansingData
+from cleaning import CleansingData
 from feature_engineering import FeatureEngineering
-from sklearn.preprocessing import MinMaxScaler
+import random
+
 class DataPreparation():
     def __init__(self,input_data, to_clean = True, to_create_fe = True):
         self.input_data = input_data
@@ -27,7 +28,6 @@ class DataPreparation():
         self.output_data = self.output_data.dropna()
     
     def normalize_data(self, method='std'):
-        self.output_data.pop('key_0')
         target = self.output_data.pop('target')
         if method=='min-max':
             self.output_data = (self.output_data-self.output_data.min())/(self.output_data.max()-self.output_data.min())
@@ -35,8 +35,13 @@ class DataPreparation():
             self.output_data = (self.output_data-self.output_data.mean())/(self.output_data.std())
 
         self.output_data['target'] = target
+    
+    def shuffle_data(self):
+        self.output_data = self.output_data.sample(frac=1)
+    
     def pipeline_pre_process(self):
         self.clean_data()
-        #self.create_new_features()
+        self.create_new_features()
         #self.normalize_data()
+        #self.shuffle_data()
         return self.output_data

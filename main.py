@@ -14,14 +14,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn import metrics, preprocessing
 from feature_importance import plot_importance
-from data_balancer import DataBalancer
 from data_preparation import DataPreparation
 from exploratory_analisys import ExploratoryAnalisys
+from model_optimize import OptimizeCatboost
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.metrics import classification_report
 from catboost import CatBoostClassifier
-from xgboost import XGBClassifier
+from sklearn.model_selection import GridSearchCV
 
 #%% Configs
 verbose = True
@@ -58,59 +58,70 @@ exploratory_analisys.view_corr_plot()
 '''
 exploratory_analisys.view_target_distribuition()
 
-'''
-    Criei um balanceador de dados manual mas optei por não utilizá-lo nesta resolução.
-'''
-to_balance = False
-if to_balance:
-    balancer = DataBalancer(input_data)
-    input_data = balancer.balance()
-
 #%% Data Preparation
 preprocess = DataPreparation(input_data)
 old_input = input_data.copy()
 input_data = preprocess.pipeline_pre_process()
-N = 9
-input_data = input_data.iloc[N: , :]
-#%%
-'''
-    Criei novas features mas após testes, vi que não surtiram muito efeito
-'''
-features = ['feature0', 'feature1', 'feature2', 'feature3', 'feature4', 'feature5',
-       'feature6', 'feature7', 'feature8', 'feature9', 'feature10',
-       'feature11', 'feature12', 'feature13', 'feature14', 'feature15']
-features = input_data.drop(columns={'target'}).columns
-#X_train, x_test, y_train, y_test = train_test_split(input_data.drop(columns={'target'}),input_data['target'],train_size=0.8)
-X_train, x_test, y_train, y_test = train_test_split(input_data[features],input_data['target'],train_size=0.70)
+#%% Split data
 
+df_train = input_data.iloc[:(int(len(input_data)*0.7))]
+df_val = input_data.iloc[(int(len(input_data)*0.7)):(int(len(input_data)*0.85))]
+df_test = input_data.iloc[(int(len(input_data)*0.85)):]
 
-# %% Catboost
-ctb_model = CatBoostClassifier(iterations=150,
+X_train, y_train = df_train.drop(columns={'target'}), df_train['target']
+x_val, y_val = df_val.drop(columns={'target'}), df_train['target']
+x_test, y_test = df_test.drop(columns={'target'}), df_test['target']
+# %% Creating model
+params = {'depth': 7,
+ 'iterations': 400,
+ 'learning_rate': 0.1762341288441044,
+ 'loss_function': 'Logloss',
+ 'l2_leaf_reg': 2.433812145711232}
+ctb_model = CatBoostClassifier(iterations=200,
                                 depth=8,
                                 learning_rate=0.35,
                                 loss_function='Logloss',
                                 auto_class_weights='SqrtBalanced',
                                 )
+ctb_model = CatBoostClassifier(**params)
 ctb_model.fit(X_train,y_train,plot=verbose)
-ctb_predictions = ctb_model.predict(x_test)
+#%% Validation 
+ctb_predictions_val = ctb_model.predict(x_val)
 
-print(classification_report(y_test,ctb_predictions))
+print(classification_report(y_val,ctb_predictions_val))
 '''
-    Confusion Matrix
+    Confusion Matrix for validation
 '''
 if verbose:
     fig, ax = plt.subplots(figsize=(8, 6))
     ConfusionMatrixDisplay.from_predictions(
-        y_test, ctb_predictions, labels=ctb_model.classes_, ax=ax, colorbar=False
+        y_val, ctb_predictions_val, labels=ctb_model.classes_, ax=ax, colorbar=False
     )
     plt.show()
-print(f"Model acc: {accuracy_score(ctb_predictions,y_test)}")
-print("ROC AUC CatBoost: ",metrics.roc_auc_score(ctb_predictions,y_test.values))
+print(f"Model acc for validation: {accuracy_score(ctb_predictions_val,y_val)}")
+print("ROC AUC for validation: ",metrics.roc_auc_score(ctb_predictions_val,y_val.values))
 
-#%%
-scores = cross_val_score(ctb_model, input_data[features],input_data['target'], cv=10)
-print("Cross Validation (10) off Catboost: %0.4f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+#%% Test
+ctb_predictions_test = ctb_model.predict(x_test)
+
+print(classification_report(y_test,ctb_predictions_test))
+'''
+    Confusion Matrix for test
+'''
+if verbose:
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ConfusionMatrixDisplay.from_predictions(
+        y_test, ctb_predictions_test, labels=ctb_model.classes_, ax=ax, colorbar=False
+    )
+    plt.show()
+print(f"Model acc for validation: {accuracy_score(ctb_predictions_test,y_test)}")
+print("ROC AUC for validation: ",metrics.roc_auc_score(ctb_predictions_test,y_test.values))
 
 # %% Feature Importance
+features = list(X_train.columns)
 plot_importance(ctb_model,features)
-#%%
+#%% Optuna tunning
+optimization = OptimizeCatboost(X_train,x_test,y_train,y_test)
+best_params = optimization.optimize()
+
+# %%
