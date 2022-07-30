@@ -89,8 +89,7 @@ forest = RandomForestClassifier(n_estimators=100,
                                 criterion='entropy',
                                 max_depth=7,
                                 min_samples_leaf=10,
-                                random_state=42,
-                                                              
+                                random_state=42,                              
                                 )
 
 #%% Evaluation - RANDOM FOREST
