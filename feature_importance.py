@@ -1,7 +1,7 @@
 import pandas as pd
 import plotly.express as px
 def plot_importance(model, features):
-    feature_important = model.get_feature_importance()
+    feature_important = model.feature_importances_
     keys = list(features)
     values = list(feature_important)
 

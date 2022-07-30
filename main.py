@@ -89,8 +89,8 @@ forest = RandomForestClassifier(n_estimators=100,
                                 criterion='entropy',
                                 max_depth=4,
                                 min_samples_leaf=10,
-                                random_state=42,                              
-                                )
+                                random_state=42,
+)
 
 #%% Evaluation - RANDOM FOREST
 scores = []
@@ -100,6 +100,7 @@ for fold in splited_data.keys():
     forest.fit(splited_data[fold]['X_train'],splited_data[fold]['y_train'])
     print(f"    => Score de treino: {forest.score(splited_data[fold]['X_train'],splited_data[fold]['y_train'])}")
     forest_predictions_test = forest.predict(splited_data[fold]['X_test'])
+    verbose = False
     if verbose:
         fig, ax = plt.subplots(figsize=(8, 6))
         ConfusionMatrixDisplay.from_predictions(
@@ -119,7 +120,7 @@ for fold in splited_data.keys():
     ctb_model.fit(splited_data[fold]['X_train'],splited_data[fold]['y_train'],plot=verbose, verbose=verbose)
     print(f"    => Score de treino: {ctb_model.score(splited_data[fold]['X_train'],splited_data[fold]['y_train'])}")
     ctb_predictions_test = ctb_model.predict(splited_data[fold]['X_test'])
-    verbose = False
+    verbose = True
     if verbose:
         fig, ax = plt.subplots(figsize=(8, 6))
         ConfusionMatrixDisplay.from_predictions(
@@ -134,7 +135,7 @@ scores = pd.Series(scores)
 print("Accuracy: %0.4f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 # %% Feature Importance
 features = list(X_train.columns)
-plot_importance(ctb_model,features)
+plot_importance(forest,features)
 #%% Optuna tunning
 optimization = OptimizeCatboost(X_train,x_test,y_train,y_test)
 best_params = optimization.optimize()
