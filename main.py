@@ -17,6 +17,7 @@ from feature_importance import plot_importance
 from data_preparation import DataPreparation
 from exploratory_analisys import ExploratoryAnalisys
 from model_optimize import OptimizeCatboost
+from split_data import SplitData
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.metrics import classification_report
@@ -64,13 +65,18 @@ old_input = input_data.copy()
 input_data = preprocess.pipeline_pre_process()
 #%% Split data
 
-df_train = input_data.iloc[:(int(len(input_data)*0.7))]
-df_val = input_data.iloc[(int(len(input_data)*0.7)):(int(len(input_data)*0.85))]
-df_test = input_data.iloc[(int(len(input_data)*0.85)):]
+# df_train = input_data.iloc[:(int(len(input_data)*0.7))]
+# df_val = input_data.iloc[(int(len(input_data)*0.7)):(int(len(input_data)*0.85))]
+# df_test = input_data.iloc[(int(len(input_data)*0.85)):]
 
-X_train, y_train = df_train.drop(columns={'target'}), df_train['target']
-x_val, y_val = df_val.drop(columns={'target'}), df_val['target']
-x_test, y_test = df_test.drop(columns={'target'}), df_test['target']
+# X_train, y_train = df_train.drop(columns={'target'}), df_train['target']
+# x_val, y_val = df_val.drop(columns={'target'}), df_val['target']
+# x_test, y_test = df_test.drop(columns={'target'}), df_test['target']
+split_data = SplitData(input_data)
+
+X_train, y_train, x_val, y_val, x_test, y_test = split_data.split_train_val_test()
+#X_train, y_train, x_test, y_test = split_data.split_train_test()
+
 # %% Creating model
 params = {'depth': 7,
  'iterations': 400,
