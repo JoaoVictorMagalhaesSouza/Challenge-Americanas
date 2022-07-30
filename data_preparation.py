@@ -2,13 +2,15 @@ import pandas as pd
 from cleaning import CleansingData
 from feature_engineering import FeatureEngineering
 import random
+from feature_selection import FeatureSelection
 
 class DataPreparation():
-    def __init__(self,input_data, to_clean = True, to_create_fe = True):
+    def __init__(self,input_data: pd.DataFrame):
         self.input_data = input_data
         self.output_data = pd.DataFrame()
         self.dataCleansing = CleansingData(self.input_data)
         self.featureEngineering = FeatureEngineering(self.input_data)
+        self.featureSelection = FeatureSelection(self.input_data)
     
     
     def clean_data(self):
@@ -38,10 +40,13 @@ class DataPreparation():
     
     def shuffle_data(self):
         self.output_data = self.output_data.sample(frac=1)
+
+    def feat_select(self):
+        self.output_data = self.featureSelection.filter_features()
     
     def pipeline_pre_process(self):
         self.clean_data()
         self.create_new_features()
-        #self.normalize_data()
-        #self.shuffle_data()
+        #self.feat_select()
+        
         return self.output_data

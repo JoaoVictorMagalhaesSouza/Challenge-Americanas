@@ -69,7 +69,7 @@ df_val = input_data.iloc[(int(len(input_data)*0.7)):(int(len(input_data)*0.85))]
 df_test = input_data.iloc[(int(len(input_data)*0.85)):]
 
 X_train, y_train = df_train.drop(columns={'target'}), df_train['target']
-x_val, y_val = df_val.drop(columns={'target'}), df_train['target']
+x_val, y_val = df_val.drop(columns={'target'}), df_val['target']
 x_test, y_test = df_test.drop(columns={'target'}), df_test['target']
 # %% Creating model
 params = {'depth': 7,
@@ -77,12 +77,12 @@ params = {'depth': 7,
  'learning_rate': 0.1762341288441044,
  'loss_function': 'Logloss',
  'l2_leaf_reg': 2.433812145711232}
-ctb_model = CatBoostClassifier(iterations=200,
-                                depth=8,
-                                learning_rate=0.35,
-                                loss_function='Logloss',
-                                auto_class_weights='SqrtBalanced',
-                                )
+# ctb_model = CatBoostClassifier(iterations=200,
+#                                 depth=8,
+#                                 learning_rate=0.35,
+#                                 loss_function='Logloss',
+#                                 auto_class_weights='SqrtBalanced',
+#                                 )
 ctb_model = CatBoostClassifier(**params)
 ctb_model.fit(X_train,y_train,plot=verbose)
 #%% Validation 
