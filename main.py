@@ -87,7 +87,7 @@ ctb_model = CatBoostClassifier(**params)
 
 forest = RandomForestClassifier(n_estimators=100,
                                 criterion='entropy',
-                                max_depth=7,
+                                max_depth=4,
                                 min_samples_leaf=10,
                                 random_state=42,                              
                                 )
