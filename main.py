@@ -23,7 +23,7 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.metrics import classification_report
 from catboost import CatBoostClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 
 
 #%% Configs
@@ -53,6 +53,11 @@ exploratory_analisys.view_time_series()
 '''
 exploratory_analisys.view_histograms()
 '''
+    Findando visualizar melhor algumas estatísticas sobre as variáveis, construo os boxplots delas.
+'''
+exploratory_analisys.view_boxplot()
+
+'''
     Na sequência, decido observar o nível de correlação das minhas variáveis de entrada com a minha target.
 '''
 exploratory_analisys.view_corr_plot()
@@ -72,23 +77,50 @@ splited_data = split_data.split_kfold(num_folds=10)
 X_train, y_train, x_test, y_test = split_data.split_train_test()
 
 # %% Creating model
-params = {'depth': 5,
- 'iterations': 40,
+params = {'depth': 4,
+ 'iterations': 80,
  'learning_rate': 0.0641091951763684,
  'loss_function': 'CrossEntropy',
- 'min_data_in_leaf': 10}
+ 'min_data_in_leaf': 8}
 
 ctb_model = CatBoostClassifier(**params)
 
+forest = RandomForestClassifier(n_estimators=100,
+                                criterion='entropy',
+                                max_depth=7,
+                                min_samples_leaf=10,
+                                random_state=42,
+                                                              
+                                )
 
+#%% Evaluation - RANDOM FOREST
+scores = []
+for fold in splited_data.keys():
+    print(fold)
+    #ctb_model.fit(splited_data[fold]['X_train'],splited_data[fold]['y_train'],plot=verbose, verbose=verbose)
+    forest.fit(splited_data[fold]['X_train'],splited_data[fold]['y_train'])
+    print(f"    => Score de treino: {forest.score(splited_data[fold]['X_train'],splited_data[fold]['y_train'])}")
+    forest_predictions_test = forest.predict(splited_data[fold]['X_test'])
+    if verbose:
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ConfusionMatrixDisplay.from_predictions(
+            splited_data[fold]['y_test'], forest_predictions_test, labels=forest.classes_, ax=ax, colorbar=False
+        )
+        plt.show()
+    print(f"    => Model acc for test: {accuracy_score(forest_predictions_test,splited_data[fold]['y_test'])}")
+    print("     => ROC AUC for test: ",metrics.roc_auc_score(forest_predictions_test,splited_data[fold]['y_test'].values))
+    scores.append(metrics.roc_auc_score(forest_predictions_test,splited_data[fold]['y_test'].values))
 
-#%% Evaluation
+scores = pd.Series(scores)
+print("Accuracy: %0.4f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+#%% Evaluation - Catboost
 scores = []
 for fold in splited_data.keys():
     print(fold)
     ctb_model.fit(splited_data[fold]['X_train'],splited_data[fold]['y_train'],plot=verbose, verbose=verbose)
     print(f"    => Score de treino: {ctb_model.score(splited_data[fold]['X_train'],splited_data[fold]['y_train'])}")
     ctb_predictions_test = ctb_model.predict(splited_data[fold]['X_test'])
+    verbose = False
     if verbose:
         fig, ax = plt.subplots(figsize=(8, 6))
         ConfusionMatrixDisplay.from_predictions(
@@ -109,7 +141,7 @@ optimization = OptimizeCatboost(X_train,x_test,y_train,y_test)
 best_params = optimization.optimize()
 
 # %% Evaluation for fix split
-model2 = CatBoostClassifier(**params)
+model2 = forest
 model2.fit(X_train,y_train)
 print(f"Score de treino: {model2.score(X_train,y_train)}")
 predicts = model2.predict(x_test)

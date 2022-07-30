@@ -40,7 +40,7 @@ class DataPreparation():
         self.output_data['target'] = target
     
     def shuffle_data(self):
-        self.output_data = self.output_data.sample(frac=1)
+        self.output_data = self.output_data.sample(frac=1,random_state=42)
 
     def feat_select(self):
         self.output_data = self.featureSelection.filter_features()
@@ -48,7 +48,8 @@ class DataPreparation():
     def pipeline_pre_process(self):
         self.clean_data()
         self.create_new_features()
+        #self.shuffle_data()
         #self.feat_select()
-        self.normalize_data()
+        #self.normalize_data()
         
         return self.output_data

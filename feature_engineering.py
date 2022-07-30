@@ -16,14 +16,14 @@ class FeatureEngineering():
         for column in self.data.columns:
             if column != self.target:
                 
-                self.df_fe[f'{column}_integral'] = self.data[column].rolling(10).sum()
+                self.df_fe[f'{column}_integral'] = self.data[column].rolling(5).sum()
 
     def momentos_estatisticos(self):
         for column in self.data.columns:
             if column != self.target:
                 
-                self.df_fe[f'{column}_moving_average'] = self.data[column].rolling(10).mean()
-                self.df_fe[f'{column}_std'] = self.data[column].rolling(10).std()
+                self.df_fe[f'{column}_moving_average'] = self.data[column].rolling(5).mean()
+                self.df_fe[f'{column}_std'] = self.data[column].rolling(5).std()
 
 
     def combinacoes_polinomiais(self):

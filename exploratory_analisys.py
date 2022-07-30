@@ -45,10 +45,10 @@ class ExploratoryAnalisys():
 
     def view_corr_plot(self):
         pearson_df = abs(self.input_data.corr('pearson'))['target']
-        spearman_df = abs(self.input_data.corr('spearman'))['target']
+        #spearman_df = abs(self.input_data.corr('spearman'))['target']
         df_corr = pd.DataFrame()
         df_corr['Pearson'] = pearson_df.values
-        df_corr['Spearman'] = spearman_df.values
+        #df_corr['Spearman'] = spearman_df.values
         df_corr['Variável'] = pearson_df.index
 
         df_corr = df_corr[df_corr['Variável']!='target']
@@ -60,11 +60,11 @@ class ExploratoryAnalisys():
                 y = df_corr['Pearson']
 
             ),
-            go.Bar(
-                name = 'Corr. Spearman',
-                x = df_corr['Variável'],
-                y = df_corr['Spearman'] #?
-            )
+            # go.Bar(
+            #     name = 'Corr. Spearman',
+            #     x = df_corr['Variável'],
+            #     y = df_corr['Spearman'] #?
+            # )
             
             ]
         )
@@ -105,6 +105,15 @@ class ExploratoryAnalisys():
             fig.show()
         
 
-        def plot_boxplot(self):
-            #Fazer boxplots
-            pass
+    def view_boxplot(self):
+        for column in self.input_data.columns:
+            if column not in['target']:
+                fig = px.box(self.input_data, y=column)
+                fig.update_layout(
+                title_text = f'Boxplot da variável {column}',
+                yaxis_title_text='Valor', 
+                
+            )
+            if self.verbose:        
+                fig.show()
+

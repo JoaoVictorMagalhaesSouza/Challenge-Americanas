@@ -32,7 +32,7 @@ class SplitData():
         X = data_aux.drop(columns={'target'})
         y = data_aux['target']
         i = 0
-        skf = StratifiedKFold(n_splits=num_folds,shuffle=False)
+        skf = StratifiedKFold(n_splits=num_folds,shuffle=True,random_state=42)
         for train_index, test_index in skf.split(X, y):
             X_train, X_test = X[X.index.isin(train_index)], X[X.index.isin(test_index)]
             y_train, y_test = y[y.index.isin(train_index)], y[y.index.isin(test_index)]
