@@ -65,17 +65,10 @@ old_input = input_data.copy()
 input_data = preprocess.pipeline_pre_process()
 #%% Split data
 
-# df_train = input_data.iloc[:(int(len(input_data)*0.7))]
-# df_val = input_data.iloc[(int(len(input_data)*0.7)):(int(len(input_data)*0.85))]
-# df_test = input_data.iloc[(int(len(input_data)*0.85)):]
-
-# X_train, y_train = df_train.drop(columns={'target'}), df_train['target']
-# x_val, y_val = df_val.drop(columns={'target'}), df_val['target']
-# x_test, y_test = df_test.drop(columns={'target'}), df_test['target']
 split_data = SplitData(input_data)
 
-X_train, y_train, x_val, y_val, x_test, y_test = split_data.split_train_val_test()
-#X_train, y_train, x_test, y_test = split_data.split_train_test()
+#X_train, y_train, x_val, y_val, x_test, y_test = split_data.split_train_val_test()
+X_train, y_train, x_test, y_test = split_data.split_train_test()
 
 # %% Creating model
 params = {'depth': 7,
@@ -120,8 +113,8 @@ if verbose:
         y_test, ctb_predictions_test, labels=ctb_model.classes_, ax=ax, colorbar=False
     )
     plt.show()
-print(f"Model acc for validation: {accuracy_score(ctb_predictions_test,y_test)}")
-print("ROC AUC for validation: ",metrics.roc_auc_score(ctb_predictions_test,y_test.values))
+print(f"Model acc for test: {accuracy_score(ctb_predictions_test,y_test)}")
+print("ROC AUC for test: ",metrics.roc_auc_score(ctb_predictions_test,y_test.values))
 
 # %% Feature Importance
 features = list(X_train.columns)

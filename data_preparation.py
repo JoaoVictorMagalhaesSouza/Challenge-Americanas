@@ -3,11 +3,12 @@ from cleaning import CleansingData
 from feature_engineering import FeatureEngineering
 import random
 from feature_selection import FeatureSelection
+from copy import deepcopy
 
 class DataPreparation():
     def __init__(self,input_data: pd.DataFrame):
         self.input_data = input_data
-        self.output_data = pd.DataFrame()
+        self.output_data = deepcopy(input_data)
         self.dataCleansing = CleansingData(self.input_data)
         self.featureEngineering = FeatureEngineering(self.input_data)
         self.featureSelection = FeatureSelection(self.input_data)
