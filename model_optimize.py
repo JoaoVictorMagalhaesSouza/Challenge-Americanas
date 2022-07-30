@@ -23,6 +23,7 @@ class OptimizeCatboost():
             #scale_pos_weight
 
         }
+        #Colocar o KFold aqui
         regressor = ctb(**param)
         regressor.fit(self.X_train, self.y_train)
         y_pred = regressor.predict(self.x_test)

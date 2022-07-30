@@ -63,7 +63,7 @@ class ExploratoryAnalisys():
             go.Bar(
                 name = 'Corr. Spearman',
                 x = df_corr['Variável'],
-                y = df_corr['Spearman']
+                y = df_corr['Spearman'] #?
             )
             
             ]
@@ -103,3 +103,8 @@ class ExploratoryAnalisys():
                 )
         if self.verbose:        
             fig.show()
+        
+
+        def plot_boxplot(self):
+            #Fazer boxplots
+            pass

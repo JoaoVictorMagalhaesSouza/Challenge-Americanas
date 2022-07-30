@@ -23,6 +23,7 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.metrics import classification_report
 from catboost import CatBoostClassifier
+from sklearn.linear_model import LogisticRegression
 
 
 #%% Configs
@@ -78,7 +79,11 @@ params = {'depth': 5,
  'min_data_in_leaf': 10}
 
 ctb_model = CatBoostClassifier(**params)
+
+
+
 #%% Evaluation
+scores = []
 for fold in splited_data.keys():
     print(fold)
     ctb_model.fit(splited_data[fold]['X_train'],splited_data[fold]['y_train'],plot=verbose, verbose=verbose)
@@ -92,7 +97,10 @@ for fold in splited_data.keys():
         plt.show()
     print(f"    => Model acc for test: {accuracy_score(ctb_predictions_test,splited_data[fold]['y_test'])}")
     print("     => ROC AUC for test: ",metrics.roc_auc_score(ctb_predictions_test,splited_data[fold]['y_test'].values))
+    scores.append(metrics.roc_auc_score(ctb_predictions_test,splited_data[fold]['y_test'].values))
 
+scores = pd.Series(scores)
+print("Accuracy: %0.4f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 # %% Feature Importance
 features = list(X_train.columns)
 plot_importance(ctb_model,features)
@@ -103,7 +111,7 @@ best_params = optimization.optimize()
 # %% Evaluation for fix split
 model2 = CatBoostClassifier(**params)
 model2.fit(X_train,y_train)
-print(f"Score de treino: {ctb_model.score(X_train,y_train)}")
+print(f"Score de treino: {model2.score(X_train,y_train)}")
 predicts = model2.predict(x_test)
-print(f"Score de teste: {ctb_model.score(x_test,y_test)}")
+print(f"Score de teste: {model2.score(x_test,y_test)}")
 # %%

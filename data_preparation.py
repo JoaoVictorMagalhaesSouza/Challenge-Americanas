@@ -49,5 +49,6 @@ class DataPreparation():
         self.clean_data()
         self.create_new_features()
         #self.feat_select()
+        self.normalize_data()
         
         return self.output_data
