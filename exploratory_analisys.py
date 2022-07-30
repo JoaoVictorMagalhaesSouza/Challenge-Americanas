@@ -18,10 +18,10 @@ class ExploratoryAnalisys():
             if column not in['x-axis','target']:
                 fig = px.line(data_frame=visualization_data,x='x-axis',y=column,
                 labels={
-                    'x-axis': "Tempo",
+                    'x-axis': "Amostra",
                     column: "Valor"
                 },
-                title=f"Comportamento temporal da variável {column}"
+                title=f"Comportamento da variável {column}"
                 )
                 if self.verbose:
                     fig.show()

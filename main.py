@@ -3,6 +3,7 @@
     Essa seção é dedicada apenas para a importação das bibliotecas necessárias para
     resolução do desafio.
 """
+from posixpath import split, splitdrive
 from matplotlib.pyplot import axis
 import pandas as pd
 import numpy as np
@@ -22,10 +23,10 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.metrics import classification_report
 from catboost import CatBoostClassifier
-from sklearn.model_selection import GridSearchCV
+
 
 #%% Configs
-verbose = True
+verbose = False
 #%% Reading the input data
 """
     Aqui é dedicada uma seção para a leitura e visualização bruta e inicial dos dados
@@ -64,57 +65,33 @@ preprocess = DataPreparation(input_data)
 old_input = input_data.copy()
 input_data = preprocess.pipeline_pre_process()
 #%% Split data
-
 split_data = SplitData(input_data)
-
+splited_data = split_data.split_kfold(num_folds=10)
 #X_train, y_train, x_val, y_val, x_test, y_test = split_data.split_train_val_test()
 X_train, y_train, x_test, y_test = split_data.split_train_test()
 
 # %% Creating model
-params = {'depth': 7,
- 'iterations': 400,
- 'learning_rate': 0.1762341288441044,
- 'loss_function': 'Logloss',
- 'l2_leaf_reg': 2.433812145711232}
-# ctb_model = CatBoostClassifier(iterations=200,
-#                                 depth=8,
-#                                 learning_rate=0.35,
-#                                 loss_function='Logloss',
-#                                 auto_class_weights='SqrtBalanced',
-#                                 )
+params = {'depth': 5,
+ 'iterations': 40,
+ 'learning_rate': 0.0641091951763684,
+ 'loss_function': 'CrossEntropy',
+ 'min_data_in_leaf': 10}
+
 ctb_model = CatBoostClassifier(**params)
-ctb_model.fit(X_train,y_train,plot=verbose)
-#%% Validation 
-ctb_predictions_val = ctb_model.predict(x_val)
-
-print(classification_report(y_val,ctb_predictions_val))
-'''
-    Confusion Matrix for validation
-'''
-if verbose:
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ConfusionMatrixDisplay.from_predictions(
-        y_val, ctb_predictions_val, labels=ctb_model.classes_, ax=ax, colorbar=False
-    )
-    plt.show()
-print(f"Model acc for validation: {accuracy_score(ctb_predictions_val,y_val)}")
-print("ROC AUC for validation: ",metrics.roc_auc_score(ctb_predictions_val,y_val.values))
-
-#%% Test
-ctb_predictions_test = ctb_model.predict(x_test)
-
-print(classification_report(y_test,ctb_predictions_test))
-'''
-    Confusion Matrix for test
-'''
-if verbose:
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ConfusionMatrixDisplay.from_predictions(
-        y_test, ctb_predictions_test, labels=ctb_model.classes_, ax=ax, colorbar=False
-    )
-    plt.show()
-print(f"Model acc for test: {accuracy_score(ctb_predictions_test,y_test)}")
-print("ROC AUC for test: ",metrics.roc_auc_score(ctb_predictions_test,y_test.values))
+#%% Evaluation
+for fold in splited_data.keys():
+    print(fold)
+    ctb_model.fit(splited_data[fold]['X_train'],splited_data[fold]['y_train'],plot=verbose, verbose=verbose)
+    print(f"    => Score de treino: {ctb_model.score(splited_data[fold]['X_train'],splited_data[fold]['y_train'])}")
+    ctb_predictions_test = ctb_model.predict(splited_data[fold]['X_test'])
+    if verbose:
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ConfusionMatrixDisplay.from_predictions(
+            splited_data[fold]['y_test'], ctb_predictions_test, labels=ctb_model.classes_, ax=ax, colorbar=False
+        )
+        plt.show()
+    print(f"    => Model acc for test: {accuracy_score(ctb_predictions_test,splited_data[fold]['y_test'])}")
+    print("     => ROC AUC for test: ",metrics.roc_auc_score(ctb_predictions_test,splited_data[fold]['y_test'].values))
 
 # %% Feature Importance
 features = list(X_train.columns)
@@ -123,4 +100,10 @@ plot_importance(ctb_model,features)
 optimization = OptimizeCatboost(X_train,x_test,y_train,y_test)
 best_params = optimization.optimize()
 
+# %% Evaluation for fix split
+model2 = CatBoostClassifier(**params)
+model2.fit(X_train,y_train)
+print(f"Score de treino: {ctb_model.score(X_train,y_train)}")
+predicts = model2.predict(x_test)
+print(f"Score de teste: {ctb_model.score(x_test,y_test)}")
 # %%

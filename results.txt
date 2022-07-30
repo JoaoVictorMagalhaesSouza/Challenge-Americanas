@@ -1,13 +1,40 @@
-Melhores resultados
-XGBoost
-	- Com limpeza + interpolação linear = 0.6228 (+/- 0.14)
-	- Com limpeza + interpolação polinomial = 0.5903 (+/- 0.15)
-	- Com limpeza + média: 0.6329 (+/- 0.09)
-	- Sem limpeza: 0.6373 (+/- 0.12)
-
-Catboost:
-	- Com limpeza + média: 0.6419 (+/- 0.12)
-	- Com feature selection sem limpeza: 0.6461 (+/- 0.15)
-	- Feature selection + limpeza: 0.6482 (+/- 0.10)
-	- Limpeza + FE: 0.6720 (+/- 0.14)
-		- Com hyperparam tunning sem FE: 0.6849 (+/- 0.17)
+FOLD 0
+    => Score de treino: 0.8077858880778589
+    => Model acc for test: 0.6086956521739131
+     => ROC AUC for test:  0.5982142857142857
+FOLD 1
+    => Score de treino: 0.8102189781021898
+    => Model acc for test: 0.6304347826086957
+     => ROC AUC for test:  0.6228070175438596
+FOLD 2
+    => Score de treino: 0.8126520681265207
+    => Model acc for test: 0.6521739130434783
+     => ROC AUC for test:  0.6458333333333333
+FOLD 3
+    => Score de treino: 0.7956204379562044
+    => Model acc for test: 0.6739130434782609
+     => ROC AUC for test:  0.6922077922077922
+FOLD 4
+    => Score de treino: 0.8175182481751825
+    => Model acc for test: 0.7608695652173914
+     => ROC AUC for test:  0.7709677419354839
+FOLD 5
+    => Score de treino: 0.8029197080291971
+    => Model acc for test: 0.5869565217391305
+     => ROC AUC for test:  0.577972709551657
+FOLD 6
+    => Score de treino: 0.8004866180048662
+    => Model acc for test: 0.5869565217391305
+     => ROC AUC for test:  0.58125
+FOLD 7
+    => Score de treino: 0.8179611650485437
+    => Model acc for test: 0.6666666666666666
+     => ROC AUC for test:  0.6628151260504201
+FOLD 8
+    => Score de treino: 0.8033980582524272
+    => Model acc for test: 0.6222222222222222
+     => ROC AUC for test:  0.615546218487395
+FOLD 9
+    => Score de treino: 0.8179611650485437
+    => Model acc for test: 0.7777777777777778
+     => ROC AUC for test:  0.7855603448275862

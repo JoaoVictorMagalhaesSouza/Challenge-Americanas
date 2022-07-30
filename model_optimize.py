@@ -14,11 +14,13 @@ class OptimizeCatboost():
     def objective(self,trial):
         param = {
             #Define params for Catboost
-            'max_depth': trial.suggest_int('depth', 4, 10, step=1),
-            'n_estimators': trial.suggest_int('iterations', 100, 500, step=50),
-            'learning_rate': trial.suggest_loguniform('learning_rate', 0.01, 0.5),
+            'depth': trial.suggest_int('depth', 3, 7, step=1),
+            'iterations': trial.suggest_int('iterations', 50, 200, step=10),
+            'learning_rate': trial.suggest_loguniform('learning_rate', 0.01, 0.1),
             'loss_function': trial.suggest_categorical('loss_function', ['Logloss','CrossEntropy']),
-            'l2_leaf_reg': trial.suggest_loguniform('l2_leaf_reg', 0.5, 5),
+            'min_data_in_leaf': trial.suggest_int('min_data_in_leaf',5, 30),
+            #'l2_leaf_reg': trial.suggest_loguniform('l2_leaf_reg', 0.5, 5),
+            #scale_pos_weight
 
         }
         regressor = ctb(**param)
