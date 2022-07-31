@@ -96,16 +96,17 @@ for fold in splited_data.keys():
         plt.show()
     #print(f"    => Model acc for test: {accuracy_score(forest_predictions_test,splited_data[fold]['y_test'])}")
     print('     => F1 score for test: ',f1_score(forest_predictions_test,splited_data[fold]['y_test']))
-    print("     => ROC AUC for test: ",metrics.roc_auc_score(forest_predictions_test,splited_data[fold]['y_test'].values))
+    #print("     => ROC AUC for test: ",metrics.roc_auc_score(forest_predictions_test,splited_data[fold]['y_test'].values))
     auc_scores.append(metrics.roc_auc_score(forest_predictions_test,splited_data[fold]['y_test'].values))
     f1_scores.append(f1_score(forest_predictions_test,splited_data[fold]['y_test']))
     print('')
     print('')
 auc_scores = pd.Series(auc_scores)
 f1_scores = pd.Series(f1_scores)
-print("ROC AUC score for CV: %0.4f (+/- %0.2f)" % (auc_scores.mean(), auc_scores.std() * 2))
+#print("ROC AUC score for CV: %0.4f (+/- %0.2f)" % (auc_scores.mean(), auc_scores.std() * 2))
 print("F1 score for CV: %0.4f (+/- %0.2f)" % (f1_scores.mean(), f1_scores.std() * 2))
-
+print('')
+print('')
 # %% Ploting the Feature Importance
 if verbose:
     features = list(X_train.columns)
@@ -124,18 +125,23 @@ model2.fit(X_train,y_train)
 print(f"    => Score for train: {model2.score(X_train,y_train)}")
 predicts = model2.predict(x_test)
 print(f"    => F1 score for test: {f1_score(predicts,y_test)}")
-print(f'    => AUC score for test: {metrics.roc_auc_score(predicts,y_test)}')
+#print(f'    => ROC AUC score for test: {metrics.roc_auc_score(predicts,y_test)}')
 print('')
 print('')
 # %% Exporting model
-
-path = 'model/joao_victor_random_forest.sav'
+print("Saving model...")
+print('')
+print('')
+path = 'saved_model/joao_victor_random_forest.sav'
 joblib.dump(forest,path)
 #%% Testing predictions for saved model
+print("Loading model...")
+print('')
+print('')
 print("Evaluation for saved model with sequencial data: ")
 loaded_model = joblib.load(path)
 predictions = loaded_model.predict(x_test)
 print(f"    => Score for train: {loaded_model.score(X_train,y_train)}")
 print(f"    => F1 score for saved model: {f1_score(predictions,y_test)}")
-print(f'    => AUC score for saved model: {metrics.roc_auc_score(predictions,y_test)}')
+#print(f'    => ROC AUC score for saved model: {metrics.roc_auc_score(predictions,y_test)}')
 # %%
