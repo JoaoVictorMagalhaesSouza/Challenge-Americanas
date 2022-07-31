@@ -1,8 +1,8 @@
 pandas
 numpy
 plotly
-xgboost
 fastparquet
 scikit-learn
 joblib
 matplotlib
+kaleido

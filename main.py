@@ -106,9 +106,9 @@ print("ROC AUC score for CV: %0.4f (+/- %0.2f)" % (auc_scores.mean(), auc_scores
 print("F1 score for CV: %0.4f (+/- %0.2f)" % (f1_scores.mean(), f1_scores.std() * 2))
 
 # %% Ploting the Feature Importance
-
-features = list(X_train.columns)
-plot_importance(forest,features)
+if verbose:
+    features = list(X_train.columns)
+    plot_importance(forest,features)
 #%% Optuna tunning
 
 to_optimize = False
@@ -117,21 +117,22 @@ if to_optimize:
     best_params = optimization.optimize()
 
 #%% Evaluation for fix split
-
+print("Evaluation for sequencial data (first 80% for train and last 20% for test)")
 model2 = forest
 model2.fit(X_train,y_train)
-print(f"Score for train: {model2.score(X_train,y_train)}")
+print(f"    => Score for train: {model2.score(X_train,y_train)}")
 predicts = model2.predict(x_test)
-print(f"F1 score for test: {f1_score(predicts,y_test)}")
-print(f'AUC score for test: {metrics.roc_auc_score(predicts,y_test)}')
+print(f"    => F1 score for test: {f1_score(predicts,y_test)}")
+print(f'    => AUC score for test: {metrics.roc_auc_score(predicts,y_test)}')
 # %% Exporting model
 
 path = 'model/joao_victor_random_forest.sav'
 joblib.dump(forest,path)
 #%% Testing predictions for saved model
-
+print("Evaluation for saved model with sequencial data: ")
 loaded_model = joblib.load(path)
 predictions = loaded_model.predict(x_test)
-print(f"F1 score for saved model: {f1_score(predictions,y_test)}")
-print(f'AUC score for saved model: {metrics.roc_auc_score(predictions,y_test)}')
+print(f"    => Score for train: {loaded_model.score(X_train,y_train)}")
+print(f"    => F1 score for saved model: {f1_score(predictions,y_test)}")
+print(f'    => AUC score for saved model: {metrics.roc_auc_score(predictions,y_test)}')
 # %%

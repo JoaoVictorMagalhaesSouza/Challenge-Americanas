@@ -17,3 +17,4 @@ def plot_importance(model, features):
         width=800
     )
     fig.show()
+    fig.write_image('figures/feature_importance.png')

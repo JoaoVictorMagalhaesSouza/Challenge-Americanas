@@ -25,6 +25,8 @@ class ExploratoryAnalisys():
                 )
                 if self.verbose:
                     fig.show()
+                    fig.write_image(f'figures/time_series_{column}.png')
+                    
         visualization_data.pop('x-axis')
     
     def view_histograms(self):
@@ -41,6 +43,7 @@ class ExploratoryAnalisys():
                 )
                 if self.verbose:
                     fig.show()
+                    fig.write_image(f'figures/histogram_{column}.png')
 
 
     def view_corr_plot(self):
@@ -76,6 +79,7 @@ class ExploratoryAnalisys():
                 )
         if self.verbose:
             fig.show()
+            fig.write_image(f'figures/correlation_plot.png')
 
     def view_target_distribuition(self):
         counts_0 = self.input_data['target'].value_counts()[0]
@@ -103,6 +107,7 @@ class ExploratoryAnalisys():
                 )
         if self.verbose:        
             fig.show()
+            fig.write_image(f'figures/target_distribuition.png')
         
 
     def view_boxplot(self):
@@ -116,4 +121,5 @@ class ExploratoryAnalisys():
             )
             if self.verbose:        
                 fig.show()
+                fig.write_image(f'figures/box_plot{column}.png')
 
