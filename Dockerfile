@@ -19,6 +19,8 @@ COPY . .
 
 RUN python -m pip install --upgrade pip
 
+EXPOSE 8050
+
 RUN pip install -r requirements.txt
 
 CMD [ "python", "-u", "main.py" ]

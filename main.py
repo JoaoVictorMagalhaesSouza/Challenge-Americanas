@@ -35,7 +35,6 @@ input_data = pd.read_parquet('data/dataset_cdjr.parquet.gzip')
     ExploratoryAnalisys cujo 'construtor' recebe os dados de entrada.
 '''
 exploratory_analisys = ExploratoryAnalisys(input_data,verbose=verbose)
-print(exploratory_analisys.describe_data())
 
 '''
     Aqui visualizamos o comportamento 'temporal' das variáveis, já na tentativa de buscar insights mais visuais
@@ -87,7 +86,7 @@ for fold in splited_data.keys():
     print(fold)
     #ctb_model.fit(splited_data[fold]['X_train'],splited_data[fold]['y_train'],plot=verbose, verbose=verbose)
     forest.fit(splited_data[fold]['X_train'],splited_data[fold]['y_train'])
-    print(f"    => Score de treino: {forest.score(splited_data[fold]['X_train'],splited_data[fold]['y_train'])}")
+    print(f"    => Score for train: {forest.score(splited_data[fold]['X_train'],splited_data[fold]['y_train'])}")
     forest_predictions_test = forest.predict(splited_data[fold]['X_test'])
     if verbose:
         fig, ax = plt.subplots(figsize=(8, 6))
@@ -100,6 +99,8 @@ for fold in splited_data.keys():
     print("     => ROC AUC for test: ",metrics.roc_auc_score(forest_predictions_test,splited_data[fold]['y_test'].values))
     auc_scores.append(metrics.roc_auc_score(forest_predictions_test,splited_data[fold]['y_test'].values))
     f1_scores.append(f1_score(forest_predictions_test,splited_data[fold]['y_test']))
+    print('')
+    print('')
 auc_scores = pd.Series(auc_scores)
 f1_scores = pd.Series(f1_scores)
 print("ROC AUC score for CV: %0.4f (+/- %0.2f)" % (auc_scores.mean(), auc_scores.std() * 2))
@@ -124,6 +125,8 @@ print(f"    => Score for train: {model2.score(X_train,y_train)}")
 predicts = model2.predict(x_test)
 print(f"    => F1 score for test: {f1_score(predicts,y_test)}")
 print(f'    => AUC score for test: {metrics.roc_auc_score(predicts,y_test)}')
+print('')
+print('')
 # %% Exporting model
 
 path = 'model/joao_victor_random_forest.sav'
