@@ -4,7 +4,7 @@
 	=> Optuna com KFold (avaliar performance de validação
 		=> Arquitetura do modelo.
 
-Mais consistente.
+Mais consistente:
 forest = RandomForestClassifier(n_estimators=100,
                                 criterion='entropy',
                                 max_depth=7,
