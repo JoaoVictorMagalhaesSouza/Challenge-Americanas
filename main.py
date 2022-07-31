@@ -6,25 +6,29 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn import metrics
-from feature_importance import plot_importance
-from data_preparation import DataPreparation
-from exploratory_analisys import ExploratoryAnalisys
-from model_optimize import OptimizeModel
-from split_data import SplitData
+from utils.feature_importance import plot_importance
+from utils.data_preparation import DataPreparation
+from utils.exploratory_analisys import ExploratoryAnalisys
+from utils.model_optimize import OptimizeModel
+from utils.split_data import SplitData
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score
 import joblib
 
 #%% Configs
+'''
+    Verbose = True: Plotagem dos gráficos.
+    Verbose = False: Não plotagem dos gráficos.
+'''
 verbose = False
 #%% Reading the input data
 """
     Aqui é dedicada uma seção para a leitura e visualização bruta e inicial dos dados
     no formato de tabela.
 """
-input_data = pd.read_parquet('dataset_cdjr.parquet.gzip')
-#display(input_data.head(10))
+input_data = pd.read_parquet('data/dataset_cdjr.parquet.gzip')
+
 #%% Exploratory Analisys
 '''
     Foi criada uma classe responsável apenas pela parte de Análise Exploratória dos Dados, denomidada
@@ -57,15 +61,18 @@ exploratory_analisys.view_corr_plot()
 exploratory_analisys.view_target_distribuition()
 
 #%% Data Preparation
+
 preprocess = DataPreparation(input_data)
 old_input = input_data.copy()
 input_data = preprocess.pipeline_pre_process()
 #%% Split data
+
 split_data = SplitData(input_data)
 splited_data = split_data.split_kfold(num_folds=10)
 X_train, y_train, x_test, y_test = split_data.split_train_test()
 
 # %% Creating model
+
 forest = RandomForestClassifier(n_estimators=100,
                                 criterion='entropy',
                                 max_depth=4,
@@ -73,6 +80,7 @@ forest = RandomForestClassifier(n_estimators=100,
                                 random_state=42,
 )
 #%% Evaluation model with KFolding
+
 f1_scores = []
 auc_scores = []
 for fold in splited_data.keys():
@@ -98,15 +106,18 @@ print("ROC AUC score for CV: %0.4f (+/- %0.2f)" % (auc_scores.mean(), auc_scores
 print("F1 score for CV: %0.4f (+/- %0.2f)" % (f1_scores.mean(), f1_scores.std() * 2))
 
 # %% Ploting the Feature Importance
+
 features = list(X_train.columns)
 plot_importance(forest,features)
 #%% Optuna tunning
+
 to_optimize = False
 if to_optimize:
     optimization = OptimizeModel(X_train,x_test,y_train,y_test, splited_data)
     best_params = optimization.optimize()
 
 #%% Evaluation for fix split
+
 model2 = forest
 model2.fit(X_train,y_train)
 print(f"Score for train: {model2.score(X_train,y_train)}")
@@ -114,10 +125,12 @@ predicts = model2.predict(x_test)
 print(f"F1 score for test: {f1_score(predicts,y_test)}")
 print(f'AUC score for test: {metrics.roc_auc_score(predicts,y_test)}')
 # %% Exporting model
-filename = 'joao_victor_random_forest.sav'
-joblib.dump(forest,filename)
+
+path = 'model/joao_victor_random_forest.sav'
+joblib.dump(forest,path)
 #%% Testing predictions for saved model
-loaded_model = joblib.load(filename)
+
+loaded_model = joblib.load(path)
 predictions = loaded_model.predict(x_test)
 print(f"F1 score for saved model: {f1_score(predictions,y_test)}")
 print(f'AUC score for saved model: {metrics.roc_auc_score(predictions,y_test)}')

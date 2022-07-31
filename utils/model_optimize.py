@@ -1,6 +1,3 @@
-from catboost import CatBoostClassifier as ctb
-from matplotlib.pyplot import step
-from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
 import optuna
 import pandas as pd

@@ -1,8 +1,7 @@
 import pandas as pd
-from cleaning import CleansingData
-from feature_engineering import FeatureEngineering
-import random
-from feature_selection import FeatureSelection
+from utils.cleaning import CleansingData
+from utils.feature_engineering import FeatureEngineering
+from utils.feature_selection import FeatureSelection
 from copy import deepcopy
 
 class DataPreparation():
