@@ -28,7 +28,7 @@ Como podemos observar, a maior parte dos valores, para a Feature 0, está contid
 Essas três primeiras análises são muito úteis pois já me fizeram perceber que uma limpeza nos dados seria extremamente relevante, uma vez que deixar que tais dados "sujos" fossem apresentados para meu modelo poderia dificultar ou até mesmo atrapalhar nas predições, já que esses dados não representam a realidade de determinada variável.
 
 ### 1.4) Distribuição da <em>target</em>
-Como se trata de um problema de classificação binária, a minha última análise exploratória é pautada na verificação do balanceamento do meu problema: o meu intuito aqui é observar se era um problema balanceado ou desbalanceado:
+Como se trata de um problema de classificação binária, meu objetivo aqui verificar o balanceamento do meu problema: se é balanceado ou desbalanceado:
 <br>
 ![Screenshot](figures/target_distribuition.png)
 <br>
