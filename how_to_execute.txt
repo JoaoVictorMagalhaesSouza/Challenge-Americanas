@@ -1,3 +1,0 @@
-1) Faça o pull da imagem Docker criada: docker pull docker pull gcr.io/cobalt-inverter-322402/image_docker_joao_victor:latest
-
-2) Execute com o seguinte comando: docker run -p 8050:8050 gcr.io/cobalt-inverter-322402/image_docker_joao_victor:latest
