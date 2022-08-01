@@ -16,7 +16,8 @@ class SplitData():
 
         return X_train, y_train, x_val, y_val, x_test, y_test
 
-    def split_train_test(self, train_size=1):
+    def split_train_test(self, train_size=0.8):
+        print(f"         => Criando uma divisão sequencial dos dados: {train_size*100}% para treino e {(1-train_size)*100}% para teste...")
         df_train = self.input_data.iloc[:(int(len(self.input_data)*train_size))]
         df_test = self.input_data.iloc[(int(len(self.input_data)*train_size)):]
 
@@ -26,6 +27,7 @@ class SplitData():
         return X_train, y_train, x_test, y_test
     
     def split_kfold(self, num_folds=4):
+        print(f"         => Criando os {num_folds} folds estratificados...")
         dict_data = {}
         data_aux = self.input_data.copy()
         data_aux.index = [x for x in range(len(data_aux))]

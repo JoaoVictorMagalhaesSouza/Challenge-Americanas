@@ -57,26 +57,32 @@ exploratory_analisys.view_boxplot()
 exploratory_analisys.view_target_distribuition()
 
 #%% Data Preparation
-
+print("Iniciando a Preparação dos Dados:")
 preprocess = DataPreparation(input_data)
 old_input = input_data.copy()
 input_data = preprocess.pipeline_pre_process()
+print("")
+print("")
 #%% Split data
-
+print("Iniciando o Split dos Dados:")
 split_data = SplitData(input_data)
 splited_data = split_data.split_kfold(num_folds=10)
 X_train, y_train, x_test, y_test = split_data.split_train_test()
-
+print("")
+print("")
 # %% Creating model
-
+print("Iniciando a Modelagem:")
+print("     => Criando o RandomForest...")
 forest = RandomForestClassifier(n_estimators=100,
                                 criterion='entropy',
                                 max_depth=4,
                                 min_samples_leaf=10,
                                 random_state=42,
 )
+print("")
+print("")
 #%% Evaluation model with KFolding
-
+print("Iniciando a Avaliação do Modelo:")
 f1_scores = []
 auc_scores = []
 for fold in splited_data.keys():
@@ -101,7 +107,7 @@ for fold in splited_data.keys():
 auc_scores = pd.Series(auc_scores)
 f1_scores = pd.Series(f1_scores)
 #print("ROC AUC score for CV: %0.4f (+/- %0.2f)" % (auc_scores.mean(), auc_scores.std() * 2))
-print("Average F1 score: %0.4f (+/- %0.2f)" % (f1_scores.mean(), f1_scores.std()))
+print("RESULTADO FINAL: Average F1 score: %0.4f (+/- %0.2f)" % (f1_scores.mean(), f1_scores.std()))
 print('')
 print('')
 # %% Ploting the Feature Importance
@@ -119,13 +125,14 @@ if to_optimize:
 
 # %% Exporting model
 to_save = False
+path = 'saved_model/joao_victor_random_forest.sav'
 if to_save:
     model2 = forest
     model2.fit(X_train,y_train)
     print("Saving model...")
     print('')
     print('')
-    path = 'saved_model/joao_victor_random_forest.sav'
+    
     joblib.dump(model2,path)
 #%% Testing predictions for saved model
 to_load = False
@@ -133,10 +140,6 @@ if to_load:
     print("Loading model...")
     print('')
     print('')
-    print("Evaluation for saved model with sequencial data: ")
     loaded_model = joblib.load(path)
-    predictions = loaded_model.predict(x_test)
-    print(f"    => Score for train: {loaded_model.score(X_train,y_train)}")
-    print(f"    => F1 score for saved model: {f1_score(predictions,y_test)}")
-    #print(f'    => ROC AUC score for saved model: {metrics.roc_auc_score(predictions,y_test)}')
+    print("Model loaded !")
 # %%

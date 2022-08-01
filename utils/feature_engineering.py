@@ -7,18 +7,21 @@ class FeatureEngineering():
         self.df_fe = pd.DataFrame()
         self.target = 'target'
 
-    def derivada(self):        
+    def derivada(self):
+        print("         => Criando a derivada das variáveis...")        
         for column in self.data.columns:
             if column != self.target:
                  self.df_fe[f'{column}_derivative'] = self.data[column].diff()
 
     def integral(self):
+        print("         => Criando a integral das variáveis...")
         for column in self.data.columns:
             if column != self.target:
                 
                 self.df_fe[f'{column}_integral'] = self.data[column].rolling(5).sum()
 
     def momentos_estatisticos(self):
+        print("         => Criando os momentos estatísticos móveis das variáveis...")
         for column in self.data.columns:
             if column != self.target:
                 
@@ -27,6 +30,7 @@ class FeatureEngineering():
 
 
     def combinacoes_polinomiais(self):
+        print("         => Criando as combinações polinomiais das variáveis...")
         df_poly = PolynomialFeatures(2)
         cols = self.data.columns
         cols = cols[0:len(cols)-2]

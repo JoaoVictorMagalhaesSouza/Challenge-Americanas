@@ -6,6 +6,7 @@ class CleansingData():
         self.input_data = input_data
     
     def remove_outliers(self):
+        print("         => Aplicando limpeza por IQR...")
         output_data = deepcopy(self.input_data)
         for column in output_data.columns:
             if column != 'target':
