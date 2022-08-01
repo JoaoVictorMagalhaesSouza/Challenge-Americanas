@@ -126,19 +126,23 @@ print(f"    => F1 score for test: {f1_score(predicts,y_test)}")
 print('')
 print('')
 # %% Exporting model
-print("Saving model...")
-print('')
-print('')
-path = 'saved_model/joao_victor_random_forest.sav'
-joblib.dump(forest,path)
+to_save = False
+if to_save:
+    print("Saving model...")
+    print('')
+    print('')
+    path = 'saved_model/joao_victor_random_forest.sav'
+    joblib.dump(model2,path)
 #%% Testing predictions for saved model
-print("Loading model...")
-print('')
-print('')
-print("Evaluation for saved model with sequencial data: ")
-loaded_model = joblib.load(path)
-predictions = loaded_model.predict(x_test)
-print(f"    => Score for train: {loaded_model.score(X_train,y_train)}")
-print(f"    => F1 score for saved model: {f1_score(predictions,y_test)}")
-#print(f'    => ROC AUC score for saved model: {metrics.roc_auc_score(predictions,y_test)}')
+to_load = False
+if to_load:
+    print("Loading model...")
+    print('')
+    print('')
+    print("Evaluation for saved model with sequencial data: ")
+    loaded_model = joblib.load(path)
+    predictions = loaded_model.predict(x_test)
+    print(f"    => Score for train: {loaded_model.score(X_train,y_train)}")
+    print(f"    => F1 score for saved model: {f1_score(predictions,y_test)}")
+    #print(f'    => ROC AUC score for saved model: {metrics.roc_auc_score(predictions,y_test)}')
 # %%

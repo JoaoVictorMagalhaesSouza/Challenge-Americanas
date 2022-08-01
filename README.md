@@ -60,7 +60,6 @@ Ao término deste processo, de 15 variáveis de entrada vamos para 201 variávei
 
 ## 3) <em>Split</em> dos dados
 Antes de criar o meu modelo em si, eu resolvi dividir os dados em 10 <em>folds</em> estratificados (KFoldStratified), visando manter a proporção "desbalanceada" do nosso problema. O objetivo dessa divisão das <em>folds</em> é poder avaliar o quão generalizável o nosso modelo está. A ideia, então, é que ele apresente um comportamento o mais similar possível para todas as <em>folds</em>.
-Além disso, também dividi os dados de entrada sequencialmente: peguei os 80% das amostras para treinar e os últimos 20% para testar, na tentativa de avaliar o modelo como se fosse um problema real, onde os dados estão organizados temporalmente.
 
 ## 4) Modelagem
 Como dito anteriormente, eu já pretendia utilizar algum algoritmo baseado em árvores. Eu havia pensado inicialmente em utilizar o <em>XGBoost</em>, <em>CatBoost</em> e o <em>RandomForest</em>, principalmente devido ao fato de serem modelos muito  eficientes em problemas de classificação e muito simples de serem utilizados. Entretanto, após alguns testes com as três abordagens, optei por utilizar o <em>RandomForest</em> na tentativa de tornar menos complexo o meu modelo, visto que identifiquei, inicialmente, uma dificuldade muito grande em tratar o <em>overfitting</em> do <em>XGBoost</em> e do <em>CatBoost</em>. Após um <em>tunning</em> de hiperparâmetros, a melhor configuração obtida para o <em>RandomForest</em> foi:
@@ -95,4 +94,9 @@ A minha ideia nesta etapa era analisar os erros e acertos do meu modelo. Como me
 ![Screenshot](figures/conf_matrix_FOLD_0.png)
 <br>
 Já que o nosso problema é levemente desbalanceado (mais ocorrências da Classe 1 que da Classe 0), a matriz de confusão do Fold 0, por exemplo, consegue evidenciar muito bem isso. O que quero explicitar é que, como possuímos mais ocorrências da Classe 1, a tendência é que saibamos mais sobre ela. Isso é mostrado na matriz de confusão com um baixo erro pra Classe 1 e alta taxa de acerto para a mesma, fato que não acontece para a Classe 0.
+
+Os resultados obtidos pelo modelo criado, para mim, foram extremamente satisfatórios principalmente pela boa generalização que pode ser observada através do KFold. Um F1 <em>score</em> médio de 0.72 é muito bom, ainda mais considerando o leve desbalanceamento do nosso problema e a pequena quantidade de amostras de entrada.
+
+## 6) Entrega do modelo
+Para a entrega do modelo, treinei o modelo referenciado na seção de Modelagem com todos os dados fornecidos e salvei, via <em>joblib</em> um arquivo de modelo que pode ser encontrado na pasta <em>"saved_model"</em>. Com isso, é possível baixar o arquivo e realizar predições para outro conjunto de dados, se for o caso.
 
