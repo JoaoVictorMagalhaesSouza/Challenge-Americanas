@@ -115,7 +115,8 @@ Para a entrega do modelo, treinei o RandomForest(4) com todos os dados fornecido
 - <strong>Passo 2 - Execução:</strong> Para criar um container com base na imagem que acabou de ser baixada, basta executar: <em><strong>docker run -p 8050:8050 gcr.io/cobalt-inverter-322402/image_docker_joao_victor:latest</strong></em>
 
 ### Forma 2 - Via Terminal:
-Basta executar o seguinte comando: <em><strong>python main.py</strong></em>. Certifique-se da existência das bibliotecas necessárias, listadas no arquivo "<em>requirements.txt</em>".
+Basta executar o seguinte comando: <em><strong>python main.py</strong></em>. Certifique-se da existência das bibliotecas necessárias, listadas no arquivo "<em>requirements.txt</em>" e de ter, preferencialmente, o Python 3.7.11 instalado.
 
 ### Forma 3 - Via VSCode:
-Essa forma é a mais indicada caso queira visualizar os gráficos em tempo de execução. Neste caso, certifique-se de alterar a variável "<em>verbose=True</em>", na linha 26, para vê-los se for do seu interesse. Além disso, certifique-se também da existência das bibliotecas necessárias, listadas no arquivo "<em>requirements.txt</em>".
+Essa forma é a mais indicada caso queira visualizar os gráficos em tempo de execução. Neste caso, certifique-se de alterar a variável "<em>verbose=True</em>", na linha 26, para vê-los se for do seu interesse. Além disso, certifique-se também da existência das bibliotecas necessárias, listadas no arquivo "<em>requirements.txt</em>" e de ter, preferencialmente, o Python 3.7.11 instalado.
+
