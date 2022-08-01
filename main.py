@@ -23,7 +23,7 @@ import joblib
     Verbose = True: Plotagem dos gráficos.
     Verbose = False: Não plotagem dos gráficos.
 '''
-verbose = True
+verbose = False
 #%% Reading the input data
 """
     Aqui é dedicada uma seção para a leitura e visualização bruta e inicial dos dados

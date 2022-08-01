@@ -74,7 +74,13 @@ Essa abordagem é bem interessante pois se meu <em>score</em> de treino estiver 
 Escolhi o F1 <em>score</em> por ser, na minha visão, a métrica mais sensata para este tipo de problema "desbalanceado", uma vez que leva em consideração tanto os valores de <em>Precision</em> quanto <em>Recall</em>, fator que não ocorre na métrica de acurácia, por exemplo, visto que ela só leva em conta o percentual de acerto.
 ![Screenshot](figures/kfold_evaluation.png)
 Como podemos observar na figura acima, as diferenças entre as métricas de treino e teste para cada <em>fold</em> estão bem baixas, apontando que nosso modelo não está overfitado. Além disso, se podemos observar o F1 <em>score</em> médio de 0.72, que julgo ser bem significativo, com um desvio-padrão de 0.04, mostrando que os resultados não estão variando muito de <em>fold</em> para <em>fold</em>, o que significa que o modelo criado está bem consistente.
-### 5.2) Análise das matrizes de confusão
-A minha ideia era de analisar os erros e acertos do meu modelo criado. Como meu F1 <em>score</em> foi relativamente alto para todos os <em>folds</em>, eu já imaginava que as matrizes de confusão apresentassem que o modelo mais acertou que errou para todos os <em>folds</em>.
-![Screenshot](figures/conf_matrix_FOLD_0.png).
-Como nosso problema é levemente desbalanceado (mais ocorrências da Classe 1 que da Classe 0), a nossa matriz de confusão do Fold 0, por exemplo, consegue evidenciar muito bem isso. O que quero explicitar é que, como possuímos mais ocorrências da Classe 1, a tendência é que saibamos mais sobre ela. Isso é mostrado na matriz de confusão com um baixo erro pra Classe 1 e alta taxa de acerto para a mesma, fato que não acontece para a Classe 0.
+
+O resultado obtido acima foi o melhor conseguido, com a utilização da limpeza e da etapa de <em>feature engineering</em>. Em termos de comparação, abaixo mostro o impacto da não-utilização destas etapas:
+![Screenshot](figures/kfold_evaluation_without_preprocess.png)
+É possível observar uma perca mínima de F1 <em>score</em> quando as etapas supracitadas não são usadas.
+
+### 5.2) Matriz de confusão
+A minha ideia nesta etapa era analisar os erros e acertos do meu modelo. Como meu F1 <em>score</em> foi relativamente alto para todos os <em>folds</em>, eu já imaginava que as matrizes de confusão apresentassem que o modelo mais acertou que errou para todos os <em>folds</em>.
+![Screenshot](figures/conf_matrix_FOLD_0.png)
+Já que o nosso problema é levemente desbalanceado (mais ocorrências da Classe 1 que da Classe 0), a matriz de confusão do Fold 0, por exemplo, consegue evidenciar muito bem isso. O que quero explicitar é que, como possuímos mais ocorrências da Classe 1, a tendência é que saibamos mais sobre ela. Isso é mostrado na matriz de confusão com um baixo erro pra Classe 1 e alta taxa de acerto para a mesma, fato que não acontece para a Classe 0.
+
