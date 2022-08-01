@@ -4,6 +4,8 @@
     resolução do desafio.
 """
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from sklearn import metrics
 from utils.feature_importance import plot_importance
@@ -21,7 +23,7 @@ import joblib
     Verbose = True: Plotagem dos gráficos.
     Verbose = False: Não plotagem dos gráficos.
 '''
-verbose = False
+verbose = True
 #%% Reading the input data
 """
     Aqui é dedicada uma seção para a leitura e visualização bruta e inicial dos dados
@@ -89,17 +91,17 @@ for fold in splited_data.keys():
             splited_data[fold]['y_test'], forest_predictions_test, labels=forest.classes_, ax=ax, colorbar=False
         )
         plt.show()
+        plt.savefig(f'figures/conf_matrix_{fold}.png')
     #print(f"    => Model acc for test: {accuracy_score(forest_predictions_test,splited_data[fold]['y_test'])}")
     print('     => F1 score for test: ',f1_score(forest_predictions_test,splited_data[fold]['y_test']))
     #print("     => ROC AUC for test: ",metrics.roc_auc_score(forest_predictions_test,splited_data[fold]['y_test'].values))
     auc_scores.append(metrics.roc_auc_score(forest_predictions_test,splited_data[fold]['y_test'].values))
     f1_scores.append(f1_score(forest_predictions_test,splited_data[fold]['y_test']))
     print('')
-    print('')
 auc_scores = pd.Series(auc_scores)
 f1_scores = pd.Series(f1_scores)
 #print("ROC AUC score for CV: %0.4f (+/- %0.2f)" % (auc_scores.mean(), auc_scores.std() * 2))
-print("F1 score for CV: %0.4f (+/- %0.2f)" % (f1_scores.mean(), f1_scores.std() * 2))
+print("Average F1 score: %0.4f (+/- %0.2f)" % (f1_scores.mean(), f1_scores.std()))
 print('')
 print('')
 # %% Ploting the Feature Importance

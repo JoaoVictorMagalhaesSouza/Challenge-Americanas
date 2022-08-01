@@ -53,7 +53,7 @@ Ao término deste processo, de 15 variáveis de entrada vamos para 201 variávei
 <strong>Observação importante:</strong> como neste ponto eu já pretendia utilizar algum modelo baseado em árvores, eu cheguei a implementar etapas como normalização e <em>feature selection</em> mas ambas não foram necessárias e não fazem sentido quando usamos modelos à base de árvores.
 
 ## 3) <em>Split</em> dos dados
-Antes de criar o meu modelo em si, eu resolvi dividir os dados em 10 <em>folds</em> estratificados (KFoldStratrified), visando manter a proporção 'desbalanceada' do nosso problema. O objetivo dessa divisão das <em>folds</em> é poder avaliar o quão generalizável o nosso modelo está. A ideia, então, é que ele apresente um comportamento o mais similar possível para todas as <em>folds</em>.
+Antes de criar o meu modelo em si, eu resolvi dividir os dados em 10 <em>folds</em> estratificados (KFoldStratified), visando manter a proporção "desbalanceada" do nosso problema. O objetivo dessa divisão das <em>folds</em> é poder avaliar o quão generalizável o nosso modelo está. A ideia, então, é que ele apresente um comportamento o mais similar possível para todas as <em>folds</em>.
 Além disso, também dividi os dados de entrada sequencialmente: peguei os 80% das amostras para treinar e os últimos 20% para testar, na tentativa de avaliar o modelo como se fosse um problema real, onde os dados estão organizados temporalmente.
 
 ## 4) Modelagem
@@ -63,3 +63,18 @@ Como dito anteriormente, eu já pretendia utilizar algum algoritmo baseado em á
 - <strong>Critério de Avaliação:</strong> entropy.
 - <strong>Número Mínimo de Amostras nos Nós Folha:</strong> 10.
 - <strong>Random Seed:</strong> 42.
+
+## 5) Avaliação da <em>performance</em> do modelo
+Uma vez que temos os <em>folds</em> e o modelo já criados, a metodologia de avaliação foi a seguinte:
+### 5.1) Análise métrica
+1. Primeiro, para cada <em>folds</em> eu vejo o <em>score</em> de treinamento;
+2. Depois, eu realizo as predições e calculo o F1 <em>score</em> das predições com os valores reais.
+Essa abordagem é bem interessante pois se meu <em>score</em> de treino estiver muito alto e o F1 <em>score</em> de teste estiver muito distante dele, significa que meu modelo está overfitado. 
+
+Escolhi o F1 <em>score</em> por ser, na minha visão, a métrica mais sensata para este tipo de problema "desbalanceado", uma vez que leva em consideração tanto os valores de <em>Precision</em> quanto <em>Recall</em>, fator que não ocorre na métrica de acurácia, por exemplo, visto que ela só leva em conta o percentual de acerto.
+![Screenshot](figures/kfold_evaluation.png)
+Como podemos observar na figura acima, as diferenças entre as métricas de treino e teste para cada <em>fold</em> estão bem baixas, apontando que nosso modelo não está overfitado. Além disso, se podemos observar o F1 <em>score</em> médio de 0.72, que julgo ser bem significativo, com um desvio-padrão de 0.04, mostrando que os resultados não estão variando muito de <em>fold</em> para <em>fold</em>, o que significa que o modelo criado está bem consistente.
+### 5.2) Análise das matrizes de confusão
+A minha ideia era de analisar os erros e acertos do meu modelo criado. Como meu F1 <em>score</em> foi relativamente alto para todos os <em>folds</em>, eu já imaginava que as matrizes de confusão apresentassem que o modelo mais acertou que errou para todos os <em>folds</em>.
+![Screenshot](figures/conf_matrix_FOLD_0.png).
+Como nosso problema é levemente desbalanceado (mais ocorrências da Classe 1 que da Classe 0), a nossa matriz de confusão do Fold 0, por exemplo, consegue evidenciar muito bem isso. O que quero explicitar é que, como possuímos mais ocorrências da Classe 1, a tendência é que saibamos mais sobre ela. Isso é mostrado na matriz de confusão com um baixo erro pra Classe 1 e alta taxa de acerto para a mesma, fato que não acontece para a Classe 0.
