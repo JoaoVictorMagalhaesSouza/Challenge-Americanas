@@ -110,7 +110,7 @@ O interessante de analisarmos aqui é que a maioria esmagadora das variáveis co
 Para a entrega do modelo, treinei o RandomForest(4) com todos os dados fornecidos e salvei, via <em>joblib</em>, um arquivo de modelo que pode ser encontrado na pasta <em>"saved_model"</em>. Com isso, é possível baixar o arquivo e realizar predições para outro conjunto de dados, se for o caso.
 
 ## 7) Formas de executar a solução
-### Forma 1 - Fazer pull de um ambiente Docker hospedado na nuvem:
+### Forma 1 - Fazer pull de um ambiente Docker hospedado no GCP:
 - <strong>Passo 1 - Realizar pull:</strong> Para realizar o pull da imagem, execute no terminal o seguinte comando: <em><strong>docker pull gcr.io/cobalt-inverter-322402/image_docker_joao_victor:latest</strong></em>
 - <strong>Passo 2 - Execução:</strong> Para criar um container com base na imagem que acabou de ser baixada, basta executar: <em><strong>docker run -p 8050:8050 gcr.io/cobalt-inverter-322402/image_docker_joao_victor:latest</strong></em>
 
