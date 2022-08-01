@@ -86,7 +86,7 @@ O resultado obtido acima foi o melhor conseguido, com a utilização da Limpeza 
 <br>
 ![Screenshot](figures/kfold_evaluation_without_preprocess.png)
 <br>
-É possível observar uma perca mínima de F1 <em>score</em> quando as etapas supracitadas não são usadas. Isso deve-se ao fato da pouca quantidade de dados mas, em geral, quanto maior for o volume de dados, mais necessário e difícil se torna tratá-los.
+É possível observar uma perca de F1 <em>score</em> quando as etapas supracitadas não são usadas. Essa diferença só não é maior devido a  pouca quantidade de dados mas, em geral, quanto maior for o volume de dados, mais necessário e difícil se torna tratá-los.
 
 ### 5.2) Matriz de confusão
 A minha ideia nesta etapa era analisar os erros e acertos do meu modelo. Como meu F1 <em>score</em> foi relativamente alto para todos os <em>folds</em>, eu já imaginava que as matrizes de confusão apresentassem que o modelo mais acertou que errou para todos os <em>folds</em>.
