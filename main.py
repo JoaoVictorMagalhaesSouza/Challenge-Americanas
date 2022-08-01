@@ -105,7 +105,6 @@ print("Average F1 score: %0.4f (+/- %0.2f)" % (f1_scores.mean(), f1_scores.std()
 print('')
 print('')
 # %% Ploting the Feature Importance
-verbose=True
 if verbose:
     forest = forest.fit(X_train,y_train)
     features = list(X_train.columns)
@@ -117,19 +116,12 @@ if to_optimize:
     optimization = OptimizeModel(X_train,x_test,y_train,y_test, splited_data)
     best_params = optimization.optimize()
 
-#%% Evaluation for fix split
-print("Evaluation for sequencial data (first 80% for train and last 20% for test)")
-model2 = forest
-model2.fit(X_train,y_train)
-print(f"    => Score for train: {model2.score(X_train,y_train)}")
-predicts = model2.predict(x_test)
-print(f"    => F1 score for test: {f1_score(predicts,y_test)}")
-#print(f'    => ROC AUC score for test: {metrics.roc_auc_score(predicts,y_test)}')
-print('')
-print('')
+
 # %% Exporting model
 to_save = False
 if to_save:
+    model2 = forest
+    model2.fit(X_train,y_train)
     print("Saving model...")
     print('')
     print('')
