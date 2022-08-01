@@ -3,7 +3,7 @@ A seguir, está documentado todo o <em>pipeline</em> para a resolução do desaf
 
 ## 1) Análise Exploratória
 Primeiramente, busquei entender, através de gráficos, o comportamento das minhas variáveis de entrada. Na minha visão, através da análise gráfica podemos entender mais facilmente sobre as variáveis, principalmente nesse caso onde não sei o que é cada cada uma delas. Nas análises a seguir, serão mostrados apenas alguns gráficos como exemplo, porém, todos os gráficos plotados para a análise exploratória podem ser consultados na pasta <strong>"figures"</strong> ou até mesmo plotados em tempo de execução.
-### 1.1) Gráfico de série temporal
+### 1.1) Gráficos de série temporal
 Como não sei se essas variáveis estão organizadas cronologicamente, então criei, inicialmente, gráficos de séries temporais para cada uma das <em>features</em> no intuito <strong>simular</strong> como se essas variáveis estivessem dispostas no tempo. Entretanto, optei por utilizar o conceito de variáveis amostralmente (amostras) organizadas. Por exemplo, para a Feature 0, temos:
 <br>
 ![Screenshot](figures/time_series_feature0.png)
@@ -42,7 +42,7 @@ Por fim, outra análise que julguei interessante foi analisar as correlações d
 Como podemos observar, as correlações lineares entre as variáveis preditoras e a nossa variável-alvo estão bem baixas. Isso implica que teremos que enriquecer ainda mais os nossos dados se quisermos relizar boas predições.
 
 ## 2) Pré processamento dos dados (<em>Data Preparation</em>)
-Uma vez que já entendo melhor tanto sobre meus dados de entrada quanto sobre minha <em>target</em>, é hora de fazer as correções necessárias nos dados de entrada devido as hipóteses levantadas na seção de Análise Exploratória (1).
+Uma vez que já entendo melhor tanto sobre meus dados de entrada quanto sobre minha <em>target</em>, é hora de fazer as correções necessárias nos dados de entrada devido as hipóteses levantadas na seção de Análise Exploratória(1).
 
 ### 2.1) Limpeza
 Como mostrado na seção 1, existem alguns <em>outliers</em> no nosso conjunto de dados. Sendo assim, optei por tratá-los ao invés de excluí-los, já que possuo poucas amostras de dados. A limpeza utilizada nesta etapa foi por <strong>+- 1.5*IQR</strong>, pois as variáveis de entrada não apresentam distribuição normal e, sendo assim, uma limpeza por desvio-padrão não seria adequada. Optei por implementar uma substituição dos <em>outliers</em> pela mediana ao invés da média, pois obtive melhores resultados com a primeira abordagem.
