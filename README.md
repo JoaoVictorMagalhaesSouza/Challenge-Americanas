@@ -69,6 +69,8 @@ Como dito anteriormente, eu já pretendia utilizar algum algoritmo baseado em á
 - <strong>Número Mínimo de Amostras nos Nós Folha:</strong> 10.
 - <strong>Random Seed:</strong> 42.
 
+<strong>Observação importante:</strong> Tanto para a criação das <em>folds</em> quanto para a criação do modelo eu fixei uma <em>seed</em>, visto o fator randômico envolvido na duas abordagens, visando trabalhar e analisar as alterações feitas sempre com o mesmo modelo e com as mesmas <em>folds</em>, invariando as análises e tornando-as mais justas e mais precisas.
+
 ## 5) Avaliação da <em>performance</em> do modelo
 Uma vez que temos os <em>folds</em> e o modelo já criados, a metodologia de avaliação foi a seguinte:
 ### 5.1) Análise métrica
