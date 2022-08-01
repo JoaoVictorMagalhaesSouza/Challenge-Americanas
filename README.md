@@ -110,13 +110,17 @@ O interessante de analisarmos aqui é que a maioria esmagadora das variáveis co
 Para a entrega do modelo, treinei o RandomForest(4) com todos os dados fornecidos e salvei, via <em>joblib</em>, um arquivo de modelo que pode ser encontrado na pasta <em>"saved_model"</em>. Com isso, é possível baixar o arquivo e realizar predições para outro conjunto de dados, se for o caso.
 
 ## 7) Formas de executar a solução
-### Forma 1 - Ambiente Docker:
+### Forma 1 - Fazer pull de um ambiente Docker hospedado na nuvem:
 - <strong>Passo 1 - Realizar pull:</strong> Para realizar o pull da imagem, execute no terminal o seguinte comando: <em><strong>docker pull gcr.io/cobalt-inverter-322402/image_docker_joao_victor:latest</strong></em>
 - <strong>Passo 2 - Execução:</strong> Para criar um container com base na imagem que acabou de ser baixada, basta executar: <em><strong>docker run -p 8050:8050 gcr.io/cobalt-inverter-322402/image_docker_joao_victor:latest</strong></em>
 
-### Forma 2 - Via Terminal:
-Basta executar o seguinte comando: <em><strong>python main.py</strong></em>. Certifique-se da existência das bibliotecas necessárias, listadas no arquivo "<em>requirements.txt</em>" e de ter, preferencialmente, o Python 3.7.11 instalado.
+### Forma 2 - Criar e executar localmente um ambiente Docker:
+- <strong>Passo 1 - Buildar a imagem:</strong> Para construir a imagem da solução, execute no terminal o seguinte comando: <em><strong>docker build -t image_docker_joao_victor .</strong></em>
+- <strong>Passo 2 - Execução:</strong> Para criar um container com base na imagem que acabou de ser criada localmente, basta executar: <em><strong>docker run -p 8050:8050 image_docker_joao_victor</strong></em>
 
-### Forma 3 - Via VSCode:
+### Forma 3 - Via prompt de comando:
+Com os arquivos do repositório baixados, basta executar o seguinte comando no terminal (no diretório que os arquivos se encontram): <em><strong>python main.py</strong></em>. Certifique-se da existência das bibliotecas necessárias, listadas no arquivo "<em>requirements.txt</em>" e de ter, preferencialmente, o Python 3.7.11 instalado.
+
+### Forma 4 - Via VSCode:
 Essa forma é a mais indicada caso queira visualizar os gráficos em tempo de execução. Neste caso, certifique-se de alterar a variável "<em>verbose=True</em>", na linha 26, para vê-los se for do seu interesse. Além disso, certifique-se também da existência das bibliotecas necessárias, listadas no arquivo "<em>requirements.txt</em>" e de ter, preferencialmente, o Python 3.7.11 instalado.
 
