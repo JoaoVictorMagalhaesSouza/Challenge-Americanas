@@ -36,16 +36,30 @@ Por fim, outra análise que julguei interessante foi analisar as correlações d
 Como podemos observar, as correlações lineares entre as variáveis preditoras e a nossa variável-alvo estão bem baixas. Isso implica que teremos que enriquecer ainda mais os nossos dados se quisermos relizar boas predições.
 
 ## 2) Pré processamento dos dados (<em>Data Preparation</em>)
-Uma vez que já entendo melhor tanto sobre meus dados de entrada quanto sobre minha <em>target</em>, é hora de fazer as correções necessárias.
+Uma vez que já entendo melhor tanto sobre meus dados de entrada quanto sobre minha <em>target</em>, é hora de fazer as correções necessárias nos dados de entrada.
 
 ### 2.1) Limpeza
 Como mostrado na seção 1, existem alguns <em>outliers</em> no nosso conjunto de dados. Sendo assim, optei por tratá-los ao invés de excluí-los, visto o pequeno número de amostras de dados. A limpeza utilizada nesta etapa foi por <strong>+- 1.5*IQR</strong>, já que as variáveis de entrada não apresentam distribuição normal e, sendo assim, uma limpeza por desvio-padrão não seria adequada. Optei por implementar uma substituição dos <em>outliers</em> pela mediana ao invés da média, visto que obtive melhores resultados com a primeira abordagem.
 
 ### 2.2) <em>Feature Engineering</em>
-Evidenciado na seção de Análise Exporatória, foi possível observar que algumas variáveis variam bem pouco e que elas possuem uma correlação muito baixa com a nossa <em>target</em>. Uma boa estratégia para agregar mais informação ao dados de entrada é através do processo de <em>Feature Engineering</em>. Como todas as variáveis de entrada são numéricas, as estratégias que pensei para este desafio foram:
+Evidenciado na seção de Análise Exporatória, foi possível observar que algumas variáveis variam bem pouco e que elas possuem uma correlação muito baixa com a nossa <em>target</em>. Uma boa estratégia para agregar mais informação aos dados de entrada é através do processo de <em>Feature Engineering</em>. Como todas as variáveis de entrada são numéricas, as estratégias que pensei para este desafio foram:
 - <strong>Derivada:</strong> a minha ideia aqui é calcular a taxa de variação das variáveis preditoras. Assim, eu consigo explicitar para meu modelo de <em>Machine Learning</em> o quanto uma variável variou de uma amostra para a outra ao longo de todas as suas amostras.
 - <strong>Integral:</strong> nessa nova <em>feature</em>, meu objetivo é calcular o somatório de uma variável em uma janela móvel de 5 amostras. É parecido com uma média móvel mas ao invés de calcular a média, calculo o somatório dessa variável. 
 - <strong>Momentos Estatísticos Móveis:</strong> outras novas variáveis que achei que poderiam ser interessantes são a média e desvio-padrão móveis. Ambas foram calculadas em uma janela móvel de 5 amostras.
 - <strong>Combinações Polinomiais:</strong> por fim, criei também as combinações polinomiais que são, basicamente todas as possíveis multiplicações entre pares de variáveis e, além disso, a potência de 2 de todas as variáveis de entrada. Assim como a Integral, essas propostas não têm uma semântica clara, ou seja, possuem apenas um viés matemático. Mesmo assim, na grande maioria dos casos, essas propostas conseguem agregar um nível significativo de informação nos conjuntos de dados nas quais são aplicadas.
 
 Ao término deste processo, de 15 variáveis de entrada vamos para 201 variáveis de entrada.
+
+<strong>Observação importante:</strong> como neste ponto eu já pretendia utilizar algum modelo baseado em árvores, eu cheguei a implementar etapas como normalização e <em>feature selection</em> mas ambas não foram necessárias e não fazem sentido quando usamos modelos à base de árvores.
+
+## 3) <em>Split</em> dos dados
+Antes de criar o meu modelo em si, eu resolvi dividir os dados em 10 <em>folds</em> estratificados (KFoldStratrified), visando manter a proporção 'desbalanceada' do nosso problema. O objetivo dessa divisão das <em>folds</em> é poder avaliar o quão generalizável o nosso modelo está. A ideia, então, é que ele apresente um comportamento o mais similar possível para todas as <em>folds</em>.
+Além disso, também dividi os dados de entrada sequencialmente: peguei os 80% das amostras para treinar e os últimos 20% para testar, na tentativa de avaliar o modelo como se fosse um problema real, onde os dados estão organizados temporalmente.
+
+## 4) Modelagem
+Como dito anteriormente, eu já pretendia utilizar algum algoritmo baseado em árvores. Eu havia pensado inicialmente em utilizar o <em>XGBoost</em>, <em>CatBoost</em> e o <em>RandomForest</em>, principalmente devido ao fato de serem modelos muito  eficientes em problemas de classificação e muito simples de serem utilizados. Entretanto, após alguns testes com as três abordagens, optei por utilizar o <em>RandomForest</em> na tentativa de tornar menos complexo o meu modelo, visto que identifiquei, inicialmente, uma dificuldade muito grande em tratar o <em>overfitting</em> do <em>XGBoost</em> e do <em>CatBoost</em>. Após um <em>tunning</em> de hiperparâmetros, a melhor configuração obtida para o <em>RandomForest</em> foi:
+- <strong>Número de Árvores:</strong> 100.
+- <strong>Profundidade Máxima:</strong> 4.
+- <strong>Critério de Avaliação:</strong> entropy.
+- <strong>Número Mínimo de Amostras nos Nós Folha:</strong> 10.
+- <strong>Random Seed:</strong> 42.
