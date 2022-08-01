@@ -100,3 +100,13 @@ Os resultados obtidos pelo modelo criado, para mim, foram extremamente satisfat�
 ## 6) Entrega do modelo
 Para a entrega do modelo, treinei o modelo referenciado na seção de Modelagem com todos os dados fornecidos e salvei, via <em>joblib</em> um arquivo de modelo que pode ser encontrado na pasta <em>"saved_model"</em>. Com isso, é possível baixar o arquivo e realizar predições para outro conjunto de dados, se for o caso.
 
+## 7) Formas de executar a solução
+### Forma 1 - Ambiente Docker:
+- <strong>Passo 1 - Realizar pull:</strong> Para realizar o pull da imagem, execute no terminal o seguinte comando: <em><strong>docker pull gcr.io/cobalt-inverter-322402/image_docker_joao_victor:latest</strong></em>
+- <strong>Passo 2 - Execução:</strong> Para criar um container com base na imagem que acabou de ser baixada, basta executar: <em><strong>docker run -p 8050:8050 gcr.io/cobalt-inverter-322402/image_docker_joao_victor:latest</strong></em>
+
+### Forma 2 - Via Terminal:
+Basta executar o seguinte comando: <em><strong>python main.py</strong></em>. Certifique-se da existência das bibliotecas necessárias, listadas no arquivo "<em>requirements.txt</em>".
+
+### Forma 3 - Via VSCode:
+Essa forma é a mais indicada caso queira visualizar os gráficos. Certifique-se de alterar a variável "<em>verbose=True</em>", na linha 26, para vê-los se for do seu interesse. Além disso, certifique-se também da existência das bibliotecas necessárias, listadas no arquivo "<em>requirements.txt</em>".
