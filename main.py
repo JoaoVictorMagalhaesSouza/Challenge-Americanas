@@ -49,11 +49,6 @@ exploratory_analisys.view_histograms()
     Findando visualizar melhor algumas estatísticas sobre as variáveis, construo os boxplots delas.
 '''
 exploratory_analisys.view_boxplot()
-
-'''
-    Na sequência, decido observar o nível de correlação das minhas variáveis de entrada com a minha target.
-'''
-exploratory_analisys.view_corr_plot()
 '''
     Por fim, como se trata de um problema de classificação, vejo se temos um problema balanceado ou desbalanceado
 '''

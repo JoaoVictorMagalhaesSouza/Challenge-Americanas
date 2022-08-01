@@ -121,5 +121,5 @@ class ExploratoryAnalisys():
             )
             if self.verbose:        
                 fig.show()
-                fig.write_image(f'figures/box_plot{column}.png')
+                fig.write_image(f'figures/box_plot_{column}.png')
 
