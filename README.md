@@ -20,19 +20,25 @@ Com esses gráficos, eu já percebi que haviam muitas variáveis que variavam mu
 
 ### 1.3) <em>Boxplots</em>
 Com os <em>boxplots</em> meu intuito é justamente ver algumas medidas estatísticas como mediana, min, max, IQR e também sobre os <em>outliers</em>:
+<br>
 ![Screenshot](figures/box_plot_feature0.png)
+<br>
 Como podemos observar, a maior parte dos valores, para a Feature 0, está contida entre 0 e aproximadamente 1500 e, graficamente, podemos confirmar alguns <em>outliers</em> que já haviam sido apontados nos gráficos de Séries Temporais (1.1).
 
 Essas três primeiras análises são muito úteis pois já me fizeram perceber que uma limpeza nos dados seria extremamente relevante.
 
 ### 1.4) Distribuição da <em>target</em>
 Como se trata de um problema de classificação binária, a minha última análise exploratória é pautada na verificação do balanceamento do meu problema: o meu intuito aqui é observar se era um problema balanceado ou desbalanceado:
+<br>
 ![Screenshot](figures/target_distribuition.png)
+<br>
 Observo que temos um leve desbalanceamento entre as classes e, inicialmente, na minha visão, não será algo problemático para este desafio.
 
 ### 1.5) Correlação das variáveis de entrada com a <em>target</em>
 Por fim, outra análise que julguei interessante foi analisar as correlações das variáveis preditoras com a <em>target</em> na tentativa de inspecionar o nível de informação que elas me dão sobre o que quero prever. Aqui, utilizei apenas a correlação de Pearson:
+<br>
 ![Screenshot](figures/correlation_plot.png)
+<br>
 Como podemos observar, as correlações lineares entre as variáveis preditoras e a nossa variável-alvo estão bem baixas. Isso implica que teremos que enriquecer ainda mais os nossos dados se quisermos relizar boas predições.
 
 ## 2) Pré processamento dos dados (<em>Data Preparation</em>)
@@ -72,15 +78,21 @@ Uma vez que temos os <em>folds</em> e o modelo já criados, a metodologia de ava
 Essa abordagem é bem interessante pois se meu <em>score</em> de treino estiver muito alto e o F1 <em>score</em> de teste estiver muito distante dele, significa que meu modelo está overfitado. 
 
 Escolhi o F1 <em>score</em> por ser, na minha visão, a métrica mais sensata para este tipo de problema "desbalanceado", uma vez que leva em consideração tanto os valores de <em>Precision</em> quanto <em>Recall</em>, fator que não ocorre na métrica de acurácia, por exemplo, visto que ela só leva em conta o percentual de acerto.
+<br>
 ![Screenshot](figures/kfold_evaluation.png)
+<br>
 Como podemos observar na figura acima, as diferenças entre as métricas de treino e teste para cada <em>fold</em> estão bem baixas, apontando que nosso modelo não está overfitado. Além disso, se podemos observar o F1 <em>score</em> médio de 0.72, que julgo ser bem significativo, com um desvio-padrão de 0.04, mostrando que os resultados não estão variando muito de <em>fold</em> para <em>fold</em>, o que significa que o modelo criado está bem consistente.
 
 O resultado obtido acima foi o melhor conseguido, com a utilização da limpeza e da etapa de <em>feature engineering</em>. Em termos de comparação, abaixo mostro o impacto da não-utilização destas etapas:
+<br>
 ![Screenshot](figures/kfold_evaluation_without_preprocess.png)
-É possível observar uma perca mínima de F1 <em>score</em> quando as etapas supracitadas não são usadas.
+<br>
+É possível observar uma perca mínima de F1 <em>score</em> quando as etapas supracitadas não são usadas. Isso deve-se ao fato da pouca quantidade de dados mas, em geral, quanto maior for o volume de dados, mais necessário e difícil se torna tratá-los.
 
 ### 5.2) Matriz de confusão
 A minha ideia nesta etapa era analisar os erros e acertos do meu modelo. Como meu F1 <em>score</em> foi relativamente alto para todos os <em>folds</em>, eu já imaginava que as matrizes de confusão apresentassem que o modelo mais acertou que errou para todos os <em>folds</em>.
+<br>
 ![Screenshot](figures/conf_matrix_FOLD_0.png)
+<br>
 Já que o nosso problema é levemente desbalanceado (mais ocorrências da Classe 1 que da Classe 0), a matriz de confusão do Fold 0, por exemplo, consegue evidenciar muito bem isso. O que quero explicitar é que, como possuímos mais ocorrências da Classe 1, a tendência é que saibamos mais sobre ela. Isso é mostrado na matriz de confusão com um baixo erro pra Classe 1 e alta taxa de acerto para a mesma, fato que não acontece para a Classe 0.
 
