@@ -1,9 +1,28 @@
 # Desafio Técnico - Americanas SA
 A seguir, está documentado todo o <em>pipeline</em> para a resolução do desafio técnico proposto para a vaga de Cientista de Dados Jr., da Americanas SA, realizado pelo candidato <strong>João Victor Magalhães Souza</strong>.
+## Sumário
+1. [Análise Exploratória](#1-análise-exploratória)
+    1.1. [Gráficos de séries temporais](#11-gráficos-de-séries-temporais)
+    1.2. [Histrogramas](#12-histogramas)
+    1.3. [Boxplots](#13-emboxplotsem)
+    1.4. [Distribuição da target](#14-distribuição-da-emtargetem)
+    1.5. [Correlação das variáveis de entrada com a target](#15-correlação-das-variáveis-de-entrada-com-a-emtargetem)
+2. [Pré processamento dos dados (Data Preparation)](#2-pré-processamento-dos-dados-emdata-preparationem)
+    2.1. [Limpeza](#21-limpeza)
+    2.2. [Feature Engineering](#22-emfeature-engineeringem)
+3. [Split dos dados](#3-emsplitem-dos-dados)
+4. [Modelagem](#4-modelagem)
+5. [Avaliação da performance do modelo](#5-avaliação-da-emperformanceem-do-modelo)
+    5.1. [Análise métrica](#51-análise-métrica)
+    5.2. [Matriz de confusão](#52-matriz-de-confusão)
+    5.3. [Variáveis mais imporantes](#53-variáveis-mais-importantes)
+6. [Entrega do modelo](#6-entrega-do-modelo)
+7. [Formas de executar a solução](#7-formas-de-executar-a-solução)
+
 
 ## 1) Análise Exploratória
 Primeiramente, busquei entender, através de gráficos, o comportamento das minhas variáveis de entrada. Na minha visão, através da análise gráfica podemos entender mais facilmente sobre as variáveis, principalmente nesse caso onde não sei o que é cada cada uma delas. Nas análises a seguir, serão mostrados apenas alguns gráficos como exemplo, porém, todos os gráficos plotados para a análise exploratória podem ser consultados na pasta <strong>"figures"</strong> ou até mesmo plotados em tempo de execução.
-### 1.1) Gráficos de série temporal
+### 1.1) Gráficos de séries temporais
 Como não sei se essas variáveis estão organizadas cronologicamente, então criei, inicialmente, gráficos de séries temporais para cada uma das <em>features</em> no intuito <strong>simular</strong> como se essas variáveis estivessem dispostas no tempo. Entretanto, optei por utilizar o conceito de variáveis amostralmente (amostras) organizadas. Por exemplo, para a Feature 0, temos:
 <br>
 ![Screenshot](figures/time_series_feature0.png)
@@ -110,6 +129,7 @@ O interessante de analisarmos aqui é que a maioria esmagadora das variáveis co
 Para a entrega do modelo, treinei o RandomForest(4) com todos os dados fornecidos e salvei, via <em>joblib</em>, um arquivo de modelo que pode ser encontrado na pasta <em>"saved_model"</em>. Com isso, é possível baixar o arquivo e realizar predições para outro conjunto de dados, se for o caso.
 
 ## 7) Formas de executar a solução
+
 ### Forma 1 - Fazer pull de um ambiente Docker hospedado no GCP:
 - <strong>Passo 1 - Realizar pull:</strong> Para realizar o pull da imagem, execute no terminal o seguinte comando: <em><strong>docker pull gcr.io/cobalt-inverter-322402/image_docker_joao_victor:latest</strong></em>
 - <strong>Passo 2 - Execução:</strong> Para criar um container com base na imagem que acabou de ser baixada, basta executar: <em><strong>docker run -p 8050:8050 gcr.io/cobalt-inverter-322402/image_docker_joao_victor:latest</strong></em>
