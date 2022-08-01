@@ -105,7 +105,9 @@ print("Average F1 score: %0.4f (+/- %0.2f)" % (f1_scores.mean(), f1_scores.std()
 print('')
 print('')
 # %% Ploting the Feature Importance
+verbose=True
 if verbose:
+    forest = forest.fit(X_train,y_train)
     features = list(X_train.columns)
     plot_importance(forest,features)
 #%% Optuna tunning

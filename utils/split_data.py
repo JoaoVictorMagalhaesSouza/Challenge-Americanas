@@ -16,7 +16,7 @@ class SplitData():
 
         return X_train, y_train, x_val, y_val, x_test, y_test
 
-    def split_train_test(self, train_size=0.8):
+    def split_train_test(self, train_size=1):
         df_train = self.input_data.iloc[:(int(len(self.input_data)*train_size))]
         df_test = self.input_data.iloc[(int(len(self.input_data)*train_size)):]
 

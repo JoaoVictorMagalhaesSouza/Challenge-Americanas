@@ -97,6 +97,13 @@ Já que o nosso problema é levemente desbalanceado (mais ocorrências da Classe
 
 Os resultados obtidos pelo modelo criado, para mim, foram extremamente satisfatórios principalmente pela boa generalização que pode ser observada através do KFold. Um F1 <em>score</em> médio de 0.72 é muito bom, ainda mais considerando o leve desbalanceamento do nosso problema e a pequena quantidade de amostras de entrada.
 
+### 5.3) Variáveis mais importantes
+Outro ponto positivo da utilização das árvores é que conseguimos visualizar quais são as variáveis que estão sendo consideradas como as mais importantes para a realização das predições. Para fazer essa análise, treinei o modelo com todas as amostras fornecidas. A seguir, é apresentado o gráfico com apenas algumas variáveis:
+<br>
+![Screenshot](figures/feature_importance.png)
+<br>
+O interessante de analisarmos aqui é que a maioria esmagadora das variáveis consideradas como sendo as mais relevantes pelo modelo são oriundas do processo de <em>feature engineering</em>, ressaltando, novamente, a importância desta etapa.
+
 ## 6) Entrega do modelo
 Para a entrega do modelo, treinei o modelo referenciado na seção de Modelagem com todos os dados fornecidos e salvei, via <em>joblib</em> um arquivo de modelo que pode ser encontrado na pasta <em>"saved_model"</em>. Com isso, é possível baixar o arquivo e realizar predições para outro conjunto de dados, se for o caso.
 
